@@ -97,16 +97,18 @@ public class Spaceship implements ApplicationListener {
 		vertices[1] = new Vector2(0, 0);
 		vertices[2] = new Vector2(32, 0);
 		dynamicShape.set(vertices);
+		body.setAngularDamping(2f);
+		body.setLinearDamping(0.2f);
 
 		Actor sprite = new Image(new TextureRegion(new Texture(Gdx.files.internal("images/spaceship.png")), 32, 26));
 		body.setUserData(sprite);
 		stage.addActor(sprite);
 		
-		FixtureDef fixtureDef = new FixtureDef();  
+		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicShape; 
 		fixtureDef.density = 1.0f;  
 		fixtureDef.friction = 0.5f;  
-		fixtureDef.restitution = 0.3f;  
+		fixtureDef.restitution = 0.3f;
 		body.createFixture(fixtureDef);
 	}
 	
@@ -114,7 +116,7 @@ public class Spaceship implements ApplicationListener {
 		Camera camera = stage.getCamera();   
 
 		BodyDef groundBodyDef =new BodyDef();  
-		groundBodyDef.position.set(new Vector2(0, 1));  
+		groundBodyDef.position.set(new Vector2(0, 65));  
 		Body groundBody = world.createBody(groundBodyDef);  
 		PolygonShape groundBox = new PolygonShape();  
 		groundBox.setAsBox((camera.viewportWidth) * 2, 1.0f);  
@@ -167,11 +169,11 @@ public class Spaceship implements ApplicationListener {
 		
 		float rot = body.getAngularVelocity();
 		
-		if((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 1.5) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 100)), body.getWorldPoint(new Vector2(28, 0)));
+		if((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 3) {
+			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 2000)), body.getWorldPoint(new Vector2(28, 0)));
 		} 
-		if((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -1.5) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 100)), body.getWorldPoint(new Vector2(4, 0)));
+		if((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -3) {
+			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 2000)), body.getWorldPoint(new Vector2(4, 0)));
 		}
 		
         //debugRenderer.render(world, stage.getCamera().combined);
