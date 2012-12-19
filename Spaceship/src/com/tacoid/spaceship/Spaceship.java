@@ -56,7 +56,7 @@ public class Spaceship implements ApplicationListener {
 					}
 					return true;
 				}
-				
+
 				@Override
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
@@ -70,9 +70,9 @@ public class Spaceship implements ApplicationListener {
 				}
 			});
 		}
-		
+
 	}
-	
+
 	private void createEngineButtons() {
 		EngineButton buttonLeft = new EngineButton(true, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
 		EngineButton buttonRight = new EngineButton(false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
@@ -81,7 +81,7 @@ public class Spaceship implements ApplicationListener {
 		stage.addActor(buttonLeft);
 		stage.addActor(buttonRight);
 	}
-	
+
 	private void createSpaceship() {
 		Camera camera = stage.getCamera();   
 
@@ -89,7 +89,7 @@ public class Spaceship implements ApplicationListener {
 		BodyDef bodyDef = new BodyDef();  
 		bodyDef.type = BodyType.DynamicBody;  
 		bodyDef.position.set(camera.viewportWidth / 4, camera.viewportHeight / 2);
-		
+
 		body = world.createBody(bodyDef);  
 		PolygonShape dynamicShape = new PolygonShape();
 		Vector2[] vertices = new Vector2[3];
@@ -103,7 +103,7 @@ public class Spaceship implements ApplicationListener {
 		Actor sprite = new Image(new TextureRegion(new Texture(Gdx.files.internal("images/spaceship.png")), 32, 26));
 		body.setUserData(sprite);
 		stage.addActor(sprite);
-		
+
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicShape; 
 		fixtureDef.density = 1.0f;  
@@ -111,7 +111,7 @@ public class Spaceship implements ApplicationListener {
 		fixtureDef.restitution = 0.3f;
 		body.createFixture(fixtureDef);
 	}
-	
+
 	public void createWalls() {
 		Camera camera = stage.getCamera();   
 
@@ -121,40 +121,40 @@ public class Spaceship implements ApplicationListener {
 		PolygonShape groundBox = new PolygonShape();  
 		groundBox.setAsBox((camera.viewportWidth) * 2, 1.0f);  
 		groundBody.createFixture(groundBox, 0.0f);
-		
+
 		groundBodyDef =new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 799));  
 		groundBody = world.createBody(groundBodyDef);  
 		groundBox = new PolygonShape();  
 		groundBox.setAsBox((camera.viewportWidth) * 2, 1.0f);  
 		groundBody.createFixture(groundBox, 0.0f);
-		
+
 		groundBodyDef =new BodyDef();  
 		groundBodyDef.position.set(new Vector2(1, 0));  
 		groundBody = world.createBody(groundBodyDef);  
 		groundBox = new PolygonShape();  
-		groundBox.setAsBox(1.0f, (camera.viewportHeight) * 2);  
+		groundBox.setAsBox(1.0f, (camera.viewportHeight));  
 		groundBody.createFixture(groundBox, 0.0f);
-		
+
 		groundBodyDef =new BodyDef();  
 		groundBodyDef.position.set(new Vector2(479, 0));  
 		groundBody = world.createBody(groundBodyDef);  
 		groundBox = new PolygonShape();  
-		groundBox.setAsBox(1.0f, (camera.viewportHeight) * 2);  
+		groundBox.setAsBox(1.0f, (camera.viewportHeight));  
 		groundBody.createFixture(groundBox, 0.0f);
 	}
-	
+
 	@Override
 	public void create() {
 		stage = new Stage(480, 800,	false);
 		createEngineButtons();
-		
+
 		world = new World(new Vector2(0, 0), true);		
 		createWalls(); 
 		createSpaceship();
-				
+
 		debugRenderer = new Box2DDebugRenderer();
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -166,36 +166,38 @@ public class Spaceship implements ApplicationListener {
 	@Override
 	public void render() {		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);  
-		
+
 		float rot = body.getAngularVelocity();
-		
+
 		if((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 3) {
 			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 2000)), body.getWorldPoint(new Vector2(28, 0)));
 		} 
 		if((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -3) {
 			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 2000)), body.getWorldPoint(new Vector2(4, 0)));
 		}
-		
-        //debugRenderer.render(world, stage.getCamera().combined);
-        world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
-        
-        Iterator<Body> bi = world.getBodies();
-        
-        while (bi.hasNext()){
-            Body b = bi.next();
 
-            // Get the bodies user data - in this example, our user 
-            // data is an instance of the Entity class
-            Actor e = (Actor) b.getUserData();
+		debugRenderer.render(world, stage.getCamera().combined);
+		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 
-            if (e != null) {
-                // Update the entities/sprites position and angle
-                e.setPosition(b.getPosition().x, b.getPosition().y);
-                // We need to convert our angle from radians to degrees
-                e.setRotation(MathUtils.radiansToDegrees * b.getAngle());
-            }
-        }
-        
+		Iterator<Body> bi = world.getBodies();
+
+		while (bi.hasNext()){
+			Body b = bi.next();
+
+			// Get the bodies user data - in this example, our user 
+			// data is an instance of the Entity class
+			Actor e = (Actor) b.getUserData();
+
+			if (e != null) {
+				// Update the entities/sprites position and angle
+				e.setPosition(b.getPosition().x, b.getPosition().y);
+				// We need to convert our angle from radians to degrees
+				e.setRotation(MathUtils.radiansToDegrees * b.getAngle());
+			}
+		}
+
+		stage.getCamera().position.y = body.getPosition().y; 
+
 		stage.draw();
 		stage.act(Gdx.graphics.getDeltaTime());	
 	}
