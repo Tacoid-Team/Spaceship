@@ -31,7 +31,7 @@ public class Spaceship implements ApplicationListener {
 	World world;  
 	Box2DDebugRenderer debugRenderer;  
 	Body body;
-	private Stage stage;
+	private Stage stage, stage_ui;
 	static final float BOX_STEP=1/60f;  
 	static final int BOX_VELOCITY_ITERATIONS=6;  
 	static final int BOX_POSITION_ITERATIONS=2;  
@@ -78,8 +78,8 @@ public class Spaceship implements ApplicationListener {
 		EngineButton buttonRight = new EngineButton(false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
 		buttonLeft.setPosition(0, 0);
 		buttonRight.setPosition(480 - 64, 0);
-		stage.addActor(buttonLeft);
-		stage.addActor(buttonRight);
+		stage_ui.addActor(buttonLeft);
+		stage_ui.addActor(buttonRight);
 	}
 
 	private void createSpaceship() {
@@ -98,7 +98,7 @@ public class Spaceship implements ApplicationListener {
 		vertices[2] = new Vector2(32, 0);
 		dynamicShape.set(vertices);
 		body.setAngularDamping(2f);
-		body.setLinearDamping(0.2f);
+		body.setLinearDamping(0.1f);
 
 		Actor sprite = new Image(new TextureRegion(new Texture(Gdx.files.internal("images/spaceship.png")), 32, 26));
 		body.setUserData(sprite);
@@ -112,7 +112,7 @@ public class Spaceship implements ApplicationListener {
 		body.createFixture(fixtureDef);
 	}
 
-	public void createWalls() {
+	private void createWalls() {
 		Camera camera = stage.getCamera();   
 
 		BodyDef groundBodyDef =new BodyDef();  
@@ -144,9 +144,36 @@ public class Spaceship implements ApplicationListener {
 		groundBody.createFixture(groundBox, 0.0f);
 	}
 
+	private void propulse() {
+		float rot = body.getAngularVelocity();
+
+		if ((engineRightOn && engineLeftOn) || (Gdx.input.isKeyPressed(Keys.RIGHT) && Gdx.input.isKeyPressed(Keys.LEFT))) {
+			body.applyLinearImpulse(body.getWorldVector(new Vector2(0, 4000)), body.getWorldCenter());
+		} else {
+			if ((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 3) {
+				body.applyAngularImpulse(5000);
+			} 
+			if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -3) {
+				body.applyAngularImpulse(-5000);
+			}
+		}
+	}
+	
+	private void propulse2() {
+		float rot = body.getAngularVelocity();
+
+		if ((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 3) {
+			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 2000)), body.getWorldPoint(new Vector2(28, 0)));
+		} 
+		if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -3) {
+			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 2000)), body.getWorldPoint(new Vector2(4, 0)));
+		}
+	}
+	
 	@Override
 	public void create() {
 		stage = new Stage(480, 800,	false);
+		stage_ui = new Stage(480, 800, false);
 		createEngineButtons();
 
 		world = new World(new Vector2(0, 0), true);		
@@ -167,14 +194,7 @@ public class Spaceship implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);  
 
-		float rot = body.getAngularVelocity();
-
-		if((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot < 3) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 2000)), body.getWorldPoint(new Vector2(28, 0)));
-		} 
-		if((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot > -3) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 2000)), body.getWorldPoint(new Vector2(4, 0)));
-		}
+		propulse2();
 
 		debugRenderer.render(world, stage.getCamera().combined);
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
@@ -196,10 +216,13 @@ public class Spaceship implements ApplicationListener {
 			}
 		}
 
-		stage.getCamera().position.y = body.getPosition().y; 
+		//stage.getCamera().position.y = body.getPosition().y; 
 
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage_ui.act(Gdx.graphics.getDeltaTime());
+		
 		stage.draw();
-		stage.act(Gdx.graphics.getDeltaTime());	
+		stage_ui.draw();	
 	}
 
 	@Override
