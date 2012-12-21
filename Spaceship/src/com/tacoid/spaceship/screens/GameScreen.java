@@ -122,8 +122,8 @@ public class GameScreen implements Screen {
 	private void createEngineButtons() {
 		EngineButton buttonLeft = new EngineButton(true, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
 		EngineButton buttonRight = new EngineButton(false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
-		buttonLeft.setPosition(0, 0);
-		buttonRight.setPosition(480 - 64, 0);
+		buttonRight.setPosition(0, 0);
+		buttonLeft.setPosition(480 - 64, 0);
 		stage_ui.addActor(buttonLeft);
 		stage_ui.addActor(buttonRight);
 	}
