@@ -8,6 +8,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -34,15 +36,51 @@ public class GameScreen implements Screen {
 	private World world;  
 	private Box2DDebugRenderer debugRenderer;  
 	private Body spaceShipBody;
+	private SpaceShipActor spaceShipActor;
 	private Stage stage, stage_ui;
 	static final float BOX_STEP=1/60f;  
 	static final int BOX_VELOCITY_ITERATIONS=6;  
 	static final int BOX_POSITION_ITERATIONS=2;  
 	static final float WORLD_TO_BOX=0.01f;  
 	static final float BOX_WORLD_TO=100f;
-	boolean engineLeftOn = false;
-	boolean engineRightOn = false;
+	private boolean engineLeftOn = false;
+	private boolean engineRightOn = false;
+	private int life = 100;
 
+	private class SpaceShipActor extends Actor {
+		private TextureRegion activeSprite;
+		private TextureRegion none, both, left, right;
+		
+		public SpaceShipActor() {
+			none = new TextureRegion(Spaceship.manager.get("images/spaceship.png", Texture.class), 32, 32);
+			both = new TextureRegion(Spaceship.manager.get("images/spaceship_both.png", Texture.class), 32, 32);
+			left = new TextureRegion(Spaceship.manager.get("images/spaceship_left.png", Texture.class), 32, 32);
+			right = new TextureRegion(Spaceship.manager.get("images/spaceship_right.png", Texture.class), 32, 32);
+			activeSprite = none;
+		}
+		
+		@Override
+		public void draw(SpriteBatch batch, float parentAlpha) {
+			batch.draw(activeSprite, getX(), getY(), 0, 0, 32, 32, 1, 1, getRotation());
+		}
+		
+		public void setBoth() {
+			activeSprite = both;
+		}
+		
+		public void setNone() {
+			activeSprite = none;
+		}
+		
+		public void setLeft() {
+			activeSprite = left;
+		}
+		
+		public void setRight() {
+			activeSprite = right;
+		}
+	}
+	
 	private class EngineButton extends Button {
 
 		public EngineButton(final boolean isLeft, Drawable up, Drawable down) {
@@ -128,16 +166,16 @@ public class GameScreen implements Screen {
 		spaceShipBody = world.createBody(bodyDef);  
 		PolygonShape dynamicShape = new PolygonShape();
 		Vector2[] vertices = new Vector2[3];
-		vertices[0] = new Vector2(16, 26);
-		vertices[1] = new Vector2(0, 0);
-		vertices[2] = new Vector2(32, 0);
+		vertices[0] = new Vector2(16, 32);
+		vertices[1] = new Vector2(0, 6);
+		vertices[2] = new Vector2(32, 6);
 		dynamicShape.set(vertices);
 		spaceShipBody.setAngularDamping(2f);
 		spaceShipBody.setLinearDamping(0.1f);
 
-		Actor sprite = new Image(new TextureRegion(Spaceship.manager.get("images/spaceship.png", Texture.class), 32, 26));
-		spaceShipBody.setUserData(sprite);
-		stage.addActor(sprite);
+		spaceShipActor = new SpaceShipActor();
+		spaceShipBody.setUserData(spaceShipActor);
+		stage.addActor(spaceShipActor);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicShape; 
@@ -183,13 +221,17 @@ public class GameScreen implements Screen {
 		float rot = spaceShipBody.getAngularVelocity();
 
 		if ((engineRightOn && engineLeftOn) || (Gdx.input.isKeyPressed(Keys.RIGHT) && Gdx.input.isKeyPressed(Keys.LEFT))) {
+			spaceShipActor.setBoth();
 			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 4000)), spaceShipBody.getWorldCenter());
 		} else {
-			if ((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot > -3) {
+			if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot > -3) {
+				spaceShipActor.setLeft();
 				spaceShipBody.applyAngularImpulse(-5000);
-			} 
-			if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot < 3) {
+			} else if ((engineRightOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot < 3) {
+				spaceShipActor.setRight();
 				spaceShipBody.applyAngularImpulse(5000);
+			} else {
+				spaceShipActor.setNone();
 			}
 		}
 	}
@@ -208,6 +250,7 @@ public class GameScreen implements Screen {
 	public void init() {
 		stage = new Stage(480, 800,	false);
 		stage_ui = new Stage(480, 800, false);
+				
 		Actor bgActor = new Image(new TextureRegion(Spaceship.manager.get("images/background1.png", Texture.class), 240, 2000));
 		bgActor.setSize(480, 4000);
 		bgActor.setPosition(0, 65);
