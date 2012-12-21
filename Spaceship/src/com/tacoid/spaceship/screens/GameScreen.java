@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -30,9 +31,9 @@ import com.tacoid.spaceship.Spaceship;
 
 public class GameScreen implements Screen {
 	private static GameScreen instance;
-	World world;  
-	Box2DDebugRenderer debugRenderer;  
-	Body body;
+	private World world;  
+	private Box2DDebugRenderer debugRenderer;  
+	private Body spaceShipBody;
 	private Stage stage, stage_ui;
 	static final float BOX_STEP=1/60f;  
 	static final int BOX_VELOCITY_ITERATIONS=6;  
@@ -89,34 +90,61 @@ public class GameScreen implements Screen {
 		stage_ui.addActor(buttonRight);
 	}
 
-	private void createSpaceship() {
+	private void createStone(int x, int y, int size, float initialAngularSpeed, Vector2 initialVector) {
+		//Dynamic Body
+		BodyDef bodyDef = new BodyDef();  
+		bodyDef.type = BodyType.DynamicBody;  
+		bodyDef.position.set(x, y);
+
+		Body body = world.createBody(bodyDef);  
+		CircleShape dynamicShape = new CircleShape();
+		dynamicShape.setRadius(size / 2);
+		dynamicShape.setPosition(new Vector2(size / 2, size / 2));
+
+		Actor sprite = new Image(new TextureRegion(Spaceship.manager.get("images/stone.png", Texture.class)));
+		sprite.setSize(size, size);
+		body.setUserData(sprite);
+		stage.addActor(sprite);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicShape; 
+		fixtureDef.density = 10.0f;  
+		fixtureDef.friction = 1.0f;  
+		fixtureDef.restitution = 0.5f;
+		body.createFixture(fixtureDef);
+	
+		body.setAngularVelocity(initialAngularSpeed);
+		body.setLinearVelocity(initialVector);
+	}
+	
+	private void createSpaceship(int x, int y) {
 		Camera camera = stage.getCamera();   
 
 		//Dynamic Body  
 		BodyDef bodyDef = new BodyDef();  
 		bodyDef.type = BodyType.DynamicBody;  
-		bodyDef.position.set(camera.viewportWidth / 4, camera.viewportHeight / 2);
+		bodyDef.position.set(x, y);
 
-		body = world.createBody(bodyDef);  
+		spaceShipBody = world.createBody(bodyDef);  
 		PolygonShape dynamicShape = new PolygonShape();
 		Vector2[] vertices = new Vector2[3];
 		vertices[0] = new Vector2(16, 26);
 		vertices[1] = new Vector2(0, 0);
 		vertices[2] = new Vector2(32, 0);
 		dynamicShape.set(vertices);
-		body.setAngularDamping(2f);
-		body.setLinearDamping(0.1f);
+		spaceShipBody.setAngularDamping(2f);
+		spaceShipBody.setLinearDamping(0.1f);
 
-		Actor sprite = new Image(new TextureRegion(new Texture(Gdx.files.internal("images/spaceship.png")), 32, 26));
-		body.setUserData(sprite);
+		Actor sprite = new Image(new TextureRegion(Spaceship.manager.get("images/spaceship.png", Texture.class), 32, 26));
+		spaceShipBody.setUserData(sprite);
 		stage.addActor(sprite);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicShape; 
 		fixtureDef.density = 1.0f;  
 		fixtureDef.friction = 0.5f;  
-		fixtureDef.restitution = 0.3f;
-		body.createFixture(fixtureDef);
+		fixtureDef.restitution = 0.1f;
+		spaceShipBody.createFixture(fixtureDef);
 	}
 
 	private void createWalls() {
@@ -152,45 +180,85 @@ public class GameScreen implements Screen {
 	}
 
 	private void propulse() {
-		float rot = body.getAngularVelocity();
+		float rot = spaceShipBody.getAngularVelocity();
 
 		if ((engineRightOn && engineLeftOn) || (Gdx.input.isKeyPressed(Keys.RIGHT) && Gdx.input.isKeyPressed(Keys.LEFT))) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(0, 4000)), body.getWorldCenter());
+			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 4000)), spaceShipBody.getWorldCenter());
 		} else {
 			if ((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot > -3) {
-				body.applyAngularImpulse(-5000);
+				spaceShipBody.applyAngularImpulse(-5000);
 			} 
 			if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot < 3) {
-				body.applyAngularImpulse(5000);
+				spaceShipBody.applyAngularImpulse(5000);
 			}
 		}
 	}
 	
 	private void propulse2() {
-		float rot = body.getAngularVelocity();
+		float rot = spaceShipBody.getAngularVelocity();
 
 		if ((engineRightOn || Gdx.input.isKeyPressed(Keys.RIGHT)) && rot > -3) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(10, 2000)), body.getWorldPoint(new Vector2(4, 0)));
+			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(10, 2000)), spaceShipBody.getWorldPoint(new Vector2(4, 0)));
 		} 
 		if ((engineLeftOn || Gdx.input.isKeyPressed(Keys.LEFT)) && rot < 3) {
-			body.applyLinearImpulse(body.getWorldVector(new Vector2(-10, 2000)), body.getWorldPoint(new Vector2(28, 0)));
+			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(-10, 2000)), spaceShipBody.getWorldPoint(new Vector2(28, 0)));
 		}
 	}
 	
 	public void init() {
 		stage = new Stage(480, 800,	false);
 		stage_ui = new Stage(480, 800, false);
-		Actor bgActor = new Image(new TextureRegion(Spaceship.manager.get("images/background1_2.jpg", Texture.class), 480, 2000));
+		Actor bgActor = new Image(new TextureRegion(Spaceship.manager.get("images/background1.png", Texture.class), 240, 2000));
+		bgActor.setSize(480, 4000);
 		bgActor.setPosition(0, 65);
 		stage.addActor(bgActor);
-		bgActor = new Image(new TextureRegion(Spaceship.manager.get("images/background1_1.jpg", Texture.class), 480, 2000));
-		bgActor.setPosition(0, 2065);
-		stage.addActor(bgActor);
+
 		createEngineButtons();
 
 		world = new World(new Vector2(0, 0), true);		
 		createWalls();
-		createSpaceship();
+		createSpaceship(240, 65);
+
+		createStone(300, 3800, 200, 0.2f, new Vector2(-10, -10));
+		createStone(250, 3700, 64, 0.2f, new Vector2(0, 10));
+		createStone(350, 3600, 64, 0.2f, new Vector2(0, 50));
+		createStone(50, 3500, 64, 0.2f, new Vector2(0, 10));
+		createStone(100, 3500, 64, -0.2f, new Vector2(0, 20));
+		createStone(300, 3500, 64, 0.2f, new Vector2(0, -10));
+		createStone(300, 3400, 200, 0.2f, new Vector2(-10, 10));
+		createStone(100, 3300, 128, -0.2f, new Vector2(-10, 0));
+		createStone(250, 3300, 48, 0.6f, new Vector2(-10, -10));
+		createStone(200, 3200, 48, 0.1f, new Vector2(-10, -10));
+		createStone(300, 3100, 200, 0.2f, new Vector2(-10, -10));
+		createStone(250, 2900, 64, 0.2f, new Vector2(0, 10));
+		createStone(350, 2900, 64, 0.2f, new Vector2(0, 50));
+		createStone(50, 2800, 64, 0.2f, new Vector2(0, 20));
+		createStone(100, 2800, 64, -0.2f, new Vector2(0, 0));
+		createStone(300, 2800, 64, 0.2f, new Vector2(0, -10));
+		createStone(300, 2700, 200, 0.2f, new Vector2(-10, -10));
+		createStone(100, 2600, 128, -0.2f, new Vector2(-10, 0));
+		createStone(250, 2600, 48, 0.6f, new Vector2(-10, -100));
+		createStone(200, 2500, 48, 0.1f, new Vector2(-10, -100));
+		createStone(300, 2400, 200, 0.2f, new Vector2(-10, -10));
+		createStone(250, 2300, 64, 0.2f, new Vector2(0, 10));
+		createStone(350, 2300, 64, 0.2f, new Vector2(0, -100));
+		createStone(50, 2300, 64, 0.2f, new Vector2(0, -10));
+		createStone(100, 2300, 64, -0.2f, new Vector2(0, 0));
+		createStone(300, 2300, 64, 0.2f, new Vector2(0, -10));
+		createStone(300, 2200, 200, 0.2f, new Vector2(-10, -10));
+		createStone(100, 2100, 128, -0.2f, new Vector2(-10, 0));
+		createStone(250, 2000, 48, 0.6f, new Vector2(-10, -100));
+		createStone(200, 1900, 48, 0.1f, new Vector2(-10, -10));
+		createStone(300, 1800, 48, 0.6f, new Vector2(-10, -100));
+		createStone(100, 1700, 128, 0.6f, new Vector2(-10, 10));
+		createStone(200, 1500, 200, 0.1f, new Vector2(-10, -10));
+		createStone(200, 1300, 64, 0.6f, new Vector2(-10, -100));
+		createStone(300, 1200, 64, 0.3f, new Vector2(-10, 0));
+		createStone(250, 1100, 128, 0.3f, new Vector2(-10, -10));
+		createStone(200, 900, 92, 0.1f, new Vector2(-1, -10));
+		createStone(100, 800, 64, 0.5f, new Vector2(10, -5));
+		createStone(300, 600, 64, 0.6f, new Vector2(-10, -10));
+		createStone(50, 400, 100, -0.1f, new Vector2(-8, 2));
 
 		debugRenderer = new Box2DDebugRenderer();
 
@@ -203,7 +271,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void centerCamera() {
-		float y = body.getPosition().y;
+		float y = spaceShipBody.getPosition().y;
 		if (y < 400) y = 400;
 		else if (y > 3665) y = 3665;
 		stage.getCamera().position.y = y;

@@ -40,8 +40,9 @@ public class Spaceship extends Game {
 	}
 
 	private void loadAssets() {
-		manager.load("images/background1_1.jpg", Texture.class);
-		manager.load("images/background1_2.jpg", Texture.class);
+		manager.load("images/background1.png", Texture.class);
+		manager.load("images/stone.png", Texture.class);
+		manager.load("images/spaceship.png", Texture.class);
 	}
 
 }
