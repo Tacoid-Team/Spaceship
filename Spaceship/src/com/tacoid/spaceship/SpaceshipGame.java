@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.tacoid.spaceship.screens.GameScreen;
 import com.tacoid.spaceship.screens.LoadingScreen;
 
-public class Spaceship extends Game {
+public class SpaceshipGame extends Game {
 
 	private LoadingScreen loadingScreen;
 	public static AssetManager manager;
