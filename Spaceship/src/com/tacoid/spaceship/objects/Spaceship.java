@@ -41,7 +41,7 @@ public class Spaceship implements ISpaceshipController {
 			fixtureDef.shape = dynamicShape; 
 			fixtureDef.density = 1.0f;  
 			fixtureDef.friction = 0.5f;  
-			fixtureDef.restitution = 0.1f;
+			fixtureDef.restitution = 0.3f;
 			spaceShipBody.createFixture(fixtureDef);
 	}
 	
