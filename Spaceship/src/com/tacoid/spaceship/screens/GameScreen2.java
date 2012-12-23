@@ -23,23 +23,9 @@ public class GameScreen2 extends AbstractGameScreen {
 		createObstacles();
 	}
 	
-	private void createObstacles() {
+	private void createObstacle(List<Vector2> obstacle) {
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 0));
-
-		List<Vector2> obstacle = new ArrayList<Vector2>();
-		
-		// TODO: lire depuis un fichier.
-		obstacle.add(new Vector2(160, 560));
-		obstacle.add(new Vector2(202, 615));
-		obstacle.add(new Vector2(263, 640));
-		obstacle.add(new Vector2(314, 619));
-		obstacle.add(new Vector2(350, 650));
-		obstacle.add(new Vector2(450, 650));
-		obstacle.add(new Vector2(490, 614));
-		obstacle.add(new Vector2(480, 550));
-		obstacle.add(new Vector2(330, 515));
-		obstacle.add(new Vector2(250, 515));
 		
 		EarClippingTriangulator ect = new EarClippingTriangulator();
 		List<Vector2> triangles = ect.computeTriangles(obstacle);
@@ -56,6 +42,80 @@ public class GameScreen2 extends AbstractGameScreen {
 		}
 		
 		stage.addActor(new ObstacleActor(obstacle, triangles));
+	}
+	
+	private void createObstacles() {
+		List<Vector2> obstacle = new ArrayList<Vector2>();
+		obstacle.add(new Vector2(76,9));
+		obstacle.add(new Vector2(310,7));
+		obstacle.add(new Vector2(327,25));
+		obstacle.add(new Vector2(452,21));
+		obstacle.add(new Vector2(602,57));
+		obstacle.add(new Vector2(755,25));
+		obstacle.add(new Vector2(941,77));
+		obstacle.add(new Vector2(969,227));
+		obstacle.add(new Vector2(945,421));
+		obstacle.add(new Vector2(989,679));
+		obstacle.add(new Vector2(965,889));
+		obstacle.add(new Vector2(953,978));
+		obstacle.add(new Vector2(804,926));
+		obstacle.add(new Vector2(638,986));
+		obstacle.add(new Vector2(440,950));
+		obstacle.add(new Vector2(246,986));
+		obstacle.add(new Vector2(121,950));
+		obstacle.add(new Vector2(36,849));
+		obstacle.add(new Vector2(76,740));
+		obstacle.add(new Vector2(40,562));
+		obstacle.add(new Vector2(68,413));
+		obstacle.add(new Vector2(28,287));
+		obstacle.add(new Vector2(61,145));
+		obstacle.add(new Vector2(0,100));
+		obstacle.add(new Vector2(0,1024));
+		obstacle.add(new Vector2(1023,1024));
+		obstacle.add(new Vector2(1024,1));
+		obstacle.add(new Vector2(0,1));
+		obstacle.add(new Vector2(0,100));
+		obstacle.add(new Vector2(76,9));
+		createObstacle(obstacle);
+		obstacle = new ArrayList<Vector2>();
+		obstacle.add(new Vector2(210,300));
+		obstacle.add(new Vector2(274,178));
+		obstacle.add(new Vector2(456,174));
+		obstacle.add(new Vector2(699,219));
+		obstacle.add(new Vector2(808,275));
+		obstacle.add(new Vector2(828,554));
+		obstacle.add(new Vector2(755,542));
+		obstacle.add(new Vector2(719,308));
+		obstacle.add(new Vector2(662,388));
+		obstacle.add(new Vector2(549,267));
+		obstacle.add(new Vector2(452,360));
+		obstacle.add(new Vector2(375,255));
+		obstacle.add(new Vector2(246,493));
+		obstacle.add(new Vector2(210,300));
+		createObstacle(obstacle);
+		obstacle = new ArrayList<Vector2>();
+		obstacle.add(new Vector2(189,784));
+		obstacle.add(new Vector2(169,647));
+		obstacle.add(new Vector2(387,655));
+		obstacle.add(new Vector2(440,833));
+		obstacle.add(new Vector2(189,784));
+		createObstacle(obstacle);
+		obstacle = new ArrayList<Vector2>();
+		obstacle.add(new Vector2(602,809));
+		obstacle.add(new Vector2(630,659));
+		obstacle.add(new Vector2(828,667));
+		obstacle.add(new Vector2(832,829));
+		obstacle.add(new Vector2(602,809));
+		createObstacle(obstacle);
+		obstacle = new ArrayList<Vector2>();
+		obstacle.add(new Vector2(501,623));
+		obstacle.add(new Vector2(533,485));
+		obstacle.add(new Vector2(408,481));
+		obstacle.add(new Vector2(412,449));
+		obstacle.add(new Vector2(585,465));
+		obstacle.add(new Vector2(525,651));
+		obstacle.add(new Vector2(501,623));
+		createObstacle(obstacle);
 	}
 
 	public static GameScreen2 getInstance() {
