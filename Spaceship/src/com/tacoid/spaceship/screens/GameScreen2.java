@@ -145,8 +145,9 @@ public class GameScreen2 extends AbstractGameScreen {
 
 			Vector2 velocity = spaceship.getSpaceShipBody().getLinearVelocity();
 			if (!base || velocity.y > 20f || (velocity.y * velocity.y + velocity.x * velocity.x) > 12000) {
-				if (spaceship.getLife() > 0) {
+				if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
 					spaceship.updateLife(-1);
+					spaceship.setHit();
 					System.out.println("bam! " + spaceship.getLife());
 					contact.setRestitution(0.7f); // La restitution est plus forte.
 				}

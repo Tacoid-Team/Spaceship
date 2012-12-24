@@ -18,6 +18,7 @@ public class Spaceship implements ISpaceshipController {
 	private Body spaceShipBody;
 	private SpaceShipActor spaceShipActor;
 	private int life = 100;
+	private long hitDate;
 	
 	public Spaceship(World world, int x, int y) {
 			//Dynamic Body  
@@ -28,14 +29,14 @@ public class Spaceship implements ISpaceshipController {
 			spaceShipBody = world.createBody(bodyDef);  
 			PolygonShape dynamicShape = new PolygonShape();
 			Vector2[] vertices = new Vector2[3];
-			vertices[0] = new Vector2(16, 32);
-			vertices[1] = new Vector2(0, 6);
-			vertices[2] = new Vector2(32, 6);
+			vertices[0] = new Vector2(0, 18);
+			vertices[1] = new Vector2(-16, -8);
+			vertices[2] = new Vector2(16, -8);
 			dynamicShape.set(vertices);
 			spaceShipBody.setAngularDamping(2f);
 			spaceShipBody.setLinearDamping(0.1f);
 
-			spaceShipActor = new SpaceShipActor();
+			spaceShipActor = new SpaceShipActor(this);
 			spaceShipBody.setUserData(spaceShipActor);
 
 			FixtureDef fixtureDef = new FixtureDef();
@@ -134,6 +135,18 @@ public class Spaceship implements ISpaceshipController {
 	}
 
 	public boolean isBase(Vector2 localV) {
-		return localV.y >= 5 && localV.y <= 7;
+		return localV.y >= -9 && localV.y <= -7;
+	}
+
+	public void setHit() {
+		this.hitDate = System.currentTimeMillis();
+	}
+	
+	public long getHitDate() {
+		return this.hitDate;
+	}
+
+	public boolean getAlreadyHit() {
+		return System.currentTimeMillis() - hitDate < 3000;
 	}
 }

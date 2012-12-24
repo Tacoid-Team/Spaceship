@@ -58,7 +58,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		createWalls();
 		
 		// Création du spaceship.
-		spaceship = new Spaceship(world, 240, 10);
+		spaceship = new Spaceship(world, 240, 20);
 		stage.addActor(spaceship.getActor());
 
 		
