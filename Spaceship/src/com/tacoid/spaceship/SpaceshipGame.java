@@ -41,8 +41,12 @@ public class SpaceshipGame extends Game {
 	}
 
 	private void loadAssets() {
-		manager.load("images/right.png", Texture.class);
-		manager.load("images/left.png", Texture.class);
+		manager.load("images/right_on.png", Texture.class);
+		manager.load("images/right_off.png", Texture.class);
+		manager.load("images/left_on.png", Texture.class);
+		manager.load("images/left_off.png", Texture.class);
+		manager.load("images/both_on.png", Texture.class);
+		manager.load("images/both_off.png", Texture.class);
 		manager.load("images/background1.png", Texture.class);
 		manager.load("images/background2.png", Texture.class);
 		manager.load("images/stone.png", Texture.class);

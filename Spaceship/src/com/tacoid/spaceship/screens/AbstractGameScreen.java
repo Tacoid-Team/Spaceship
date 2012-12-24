@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.tacoid.spaceship.KeyboardHandler;
 import com.tacoid.spaceship.SpaceshipGame;
 import com.tacoid.spaceship.actors.EngineButton;
+import com.tacoid.spaceship.actors.EngineButton.Direction;
 import com.tacoid.spaceship.objects.Spaceship;
 
 public class AbstractGameScreen implements Screen, ContactListener {
@@ -109,12 +110,15 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	}
 	
 	protected void createEngineButtons() {
-		EngineButton buttonLeft = new EngineButton(spaceship, false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left.png")), 156, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left.png")), 156, 64)));
-		EngineButton buttonRight = new EngineButton(spaceship, true, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right.png")), 64, 156)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right.png")), 64, 156)));
-		buttonRight.setPosition(480 - 64, 0);
-		buttonLeft.setPosition(480 - 156, 0);
+		EngineButton buttonBoth = new EngineButton(spaceship, Direction.UP, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/both_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/both_on.png")), 100, 100)));
+		EngineButton buttonLeft = new EngineButton(spaceship, Direction.LEFT, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left_on.png")), 100, 100)));
+		EngineButton buttonRight = new EngineButton(spaceship, Direction.RIGHT, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right_on.png")), 100, 100)));
+		buttonBoth.setPosition(5, 50);
+		buttonRight.setPosition(480 - 105, 50);
+		buttonLeft.setPosition(480 - 210, 50);
 		stage_ui.addActor(buttonLeft);
 		stage_ui.addActor(buttonRight);
+		stage_ui.addActor(buttonBoth);
 	}
 	
 	protected void centerCamera() {
