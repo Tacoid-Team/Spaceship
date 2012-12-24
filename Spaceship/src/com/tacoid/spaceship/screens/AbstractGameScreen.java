@@ -34,9 +34,9 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	protected Stage stage, stage_ui;
 	protected Spaceship spaceship;
 	private Box2DDebugRenderer debugRenderer;
-	private static final float BOX_STEP=1/60f;  
-	private static final int BOX_VELOCITY_ITERATIONS=6;  
-	private static final int BOX_POSITION_ITERATIONS=2;  
+	private static final float BOX_STEP = 1/60f;
+	private static final int BOX_VELOCITY_ITERATIONS = 6;  
+	private static final int BOX_POSITION_ITERATIONS = 2;  
 	
 	protected void init(String background, int gravity, int world_width, int world_height) {
 		WORLD_WIDTH = world_width;
@@ -109,10 +109,10 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	}
 	
 	protected void createEngineButtons() {
-		EngineButton buttonLeft = new EngineButton(spaceship, true, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
-		EngineButton buttonRight = new EngineButton(spaceship, false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_off.png")), 64, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/engine_on.png")), 64, 64)));
-		buttonRight.setPosition(0, 0);
-		buttonLeft.setPosition(480 - 64, 0);
+		EngineButton buttonLeft = new EngineButton(spaceship, false, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left.png")), 156, 64)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left.png")), 156, 64)));
+		EngineButton buttonRight = new EngineButton(spaceship, true, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right.png")), 64, 156)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right.png")), 64, 156)));
+		buttonRight.setPosition(480 - 64, 0);
+		buttonLeft.setPosition(480 - 156, 0);
 		stage_ui.addActor(buttonLeft);
 		stage_ui.addActor(buttonRight);
 	}

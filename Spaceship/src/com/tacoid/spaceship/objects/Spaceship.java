@@ -14,6 +14,7 @@ import com.tacoid.spaceship.actors.SpaceShipActor;
 public class Spaceship implements ISpaceshipController {
 	private boolean leftOn = false;
 	private boolean rightOn = false;
+	private boolean bothOn = false;
 	private Body spaceShipBody;
 	private SpaceShipActor spaceShipActor;
 	private int life = 100;
@@ -50,7 +51,9 @@ public class Spaceship implements ISpaceshipController {
 
 		if (areBothOn()) {
 			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 4000)), spaceShipBody.getWorldCenter());
-		} else {
+		}
+		
+		if (isLeftOn() ^ isRightOn()) {
 			if (isLeftOn() && rot > -3) {
 				spaceShipBody.applyAngularImpulse(-5000);
 			} else if (isRightOn() && rot < 3) {
@@ -94,9 +97,15 @@ public class Spaceship implements ISpaceshipController {
 		rightOn = on;
 		updateActor();
 	}
+	
+	@Override
+	public void engineBoth(boolean on) {
+		bothOn = on;
+		updateActor();
+	}
 
 	private void updateActor() {
-		if (leftOn && rightOn) {
+		if (areBothOn()) {
 			spaceShipActor.setBoth();
 		} else {
 			if (leftOn) {
@@ -121,6 +130,6 @@ public class Spaceship implements ISpaceshipController {
 
 	@Override
 	public boolean areBothOn() {
-		return leftOn && rightOn;
+		return leftOn && rightOn || bothOn;
 	}
 }
