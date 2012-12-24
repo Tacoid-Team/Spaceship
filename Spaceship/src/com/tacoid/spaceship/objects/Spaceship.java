@@ -132,4 +132,8 @@ public class Spaceship implements ISpaceshipController {
 	public boolean areBothOn() {
 		return leftOn && rightOn || bothOn;
 	}
+
+	public boolean isBase(Vector2 localV) {
+		return localV.y >= 5 && localV.y <= 7;
+	}
 }

@@ -9,27 +9,28 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.tacoid.spaceship.actors.ObstacleActor;
 
 public class GameScreen2 extends AbstractGameScreen {
 	private static GameScreen2 instance;
-	
+
 	private GameScreen2() {
 		init();
 	}
-	
+
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
 		createObstacles();
 	}
-	
+
 	private void createObstacle(List<Vector2> obstacle) {
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 0));
-		
+
 		EarClippingTriangulator ect = new EarClippingTriangulator();
 		List<Vector2> triangles = ect.computeTriangles(obstacle);
-		
+
 		for (int i = 0; i < triangles.size(); i++) {
 			if ((i + 1) % 3 == 0) {
 				Body groundBody = world.createBody(groundBodyDef);  
@@ -37,13 +38,13 @@ public class GameScreen2 extends AbstractGameScreen {
 				Vector2[] v = new Vector2[] {triangles.get(i), triangles.get(i-1), triangles.get(i-2)};
 				groundBox.set(v);
 				groundBody.createFixture(groundBox, 0.0f);
-				
+
 			}
 		}
-		
+
 		stage.addActor(new ObstacleActor(obstacle, triangles));
 	}
-	
+
 	private void createObstacles() {
 		List<Vector2> obstacle = new ArrayList<Vector2>();
 		obstacle.add(new Vector2(76,9));
@@ -125,15 +126,31 @@ public class GameScreen2 extends AbstractGameScreen {
 		return instance;
 	}
 
-
 	@Override
-	public void beginContact(Contact contact) {
+	public void beginContact(Contact contact) {	
 		if (contact.getFixtureA().getBody() == spaceship.getSpaceShipBody()
 				|| contact.getFixtureB().getBody() == spaceship.getSpaceShipBody()) {
-			if (spaceship.getLife() > 0) {
-				spaceship.updateLife(-1);
+
+			WorldManifold manifold = contact.getWorldManifold();
+
+			boolean base = true;
+			for (int i = 0; i < manifold.getNumberOfContactPoints(); i++) {
+				Vector2 v = manifold.getPoints()[i];
+				Vector2 localV = spaceship.getSpaceShipBody().getLocalPoint(v);
+
+				if (!spaceship.isBase(localV)) {
+					base = false;
+				}
 			}
-			System.out.println("life: " + spaceship.getLife());
+
+			Vector2 velocity = spaceship.getSpaceShipBody().getLinearVelocity();
+			if (!base || velocity.y > 20f || (velocity.y * velocity.y + velocity.x * velocity.x) > 12000) {
+				if (spaceship.getLife() > 0) {
+					spaceship.updateLife(-1);
+					System.out.println("bam! " + spaceship.getLife());
+					contact.setRestitution(0.7f); // La restitution est plus forte.
+				}
+			}
 		}
 	}
 
