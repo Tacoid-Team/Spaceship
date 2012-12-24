@@ -29,9 +29,9 @@ public class Spaceship implements ISpaceshipController {
 			spaceShipBody = world.createBody(bodyDef);  
 			PolygonShape dynamicShape = new PolygonShape();
 			Vector2[] vertices = new Vector2[3];
-			vertices[0] = new Vector2(0, 18);
-			vertices[1] = new Vector2(-16, -8);
-			vertices[2] = new Vector2(16, -8);
+			vertices[0] = new Vector2(0, 16);
+			vertices[1] = new Vector2(-16, -10);
+			vertices[2] = new Vector2(16, -10);
 			dynamicShape.set(vertices);
 			spaceShipBody.setAngularDamping(2f);
 			spaceShipBody.setLinearDamping(0.1f);
@@ -135,7 +135,7 @@ public class Spaceship implements ISpaceshipController {
 	}
 
 	public boolean isBase(Vector2 localV) {
-		return localV.y >= -9 && localV.y <= -7;
+		return localV.y >= -11 && localV.y <= -9;
 	}
 
 	public void setHit() {
