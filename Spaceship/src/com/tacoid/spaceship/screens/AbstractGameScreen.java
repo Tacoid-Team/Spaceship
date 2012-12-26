@@ -110,9 +110,9 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	}
 	
 	protected void createEngineButtons() {
-		EngineButton buttonBoth = new EngineButton(spaceship, Direction.UP, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/both_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/both_on.png")), 100, 100)));
-		EngineButton buttonLeft = new EngineButton(spaceship, Direction.LEFT, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/left_on.png")), 100, 100)));
-		EngineButton buttonRight = new EngineButton(spaceship, Direction.RIGHT, new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right_off.png")), 100, 100)), new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/right_on.png")), 100, 100)));
+		EngineButton buttonBoth = new EngineButton(spaceship, Direction.UP, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_on.png", Texture.class), 100, 100)));
+		EngineButton buttonLeft = new EngineButton(spaceship, Direction.LEFT, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/left_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/left_on.png", Texture.class), 100, 100)));
+		EngineButton buttonRight = new EngineButton(spaceship, Direction.RIGHT, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/right_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/right_on.png", Texture.class), 100, 100)));
 		buttonBoth.setPosition(5, 50);
 		buttonRight.setPosition(480 - 105, 50);
 		buttonLeft.setPosition(480 - 210, 50);
