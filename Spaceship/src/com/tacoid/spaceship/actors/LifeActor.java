@@ -14,7 +14,7 @@ public class LifeActor extends Actor {
 
 	public LifeActor(Spaceship spaceship) {
 		this.spaceship = spaceship;
-		sprite = new Sprite(new TextureRegion(SpaceshipGame.manager.get("images/lifebar.png", Texture.class), 47, 10));
+		sprite = new Sprite(new TextureRegion(SpaceshipGame.manager.get("images/lifebar.png", Texture.class), 42, 10));
 	}
 	
 	@Override

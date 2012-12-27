@@ -15,7 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="Nouveau document 1">
+   sodipodi:docname="lifebar.svg"
+   inkscape:export-filename="/home/max/git/space/Spaceship-android/assets/images/lifebar.png"
+   inkscape:export-xdpi="15.867768"
+   inkscape:export-ydpi="15.867768">
   <defs
      id="defs4">
     <linearGradient
@@ -38,7 +41,8 @@
        y1="62.467319"
        x2="219.00685"
        y2="184.69579"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.89159815,0,0,1,9.2915871,0)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -75,9 +79,9 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:url(#linearGradient3771);fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:url(#linearGradient3771);fill-opacity:1;stroke:#000000;stroke-width:0.94424474;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect2985"
-       width="267.14285"
+       width="238.18407"
        height="55.714287"
        x="85.714287"
        y="95.219322"
