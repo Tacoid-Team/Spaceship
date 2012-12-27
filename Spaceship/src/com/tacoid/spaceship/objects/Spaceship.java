@@ -17,43 +17,46 @@ public class Spaceship implements ISpaceshipController {
 	private boolean bothOn = false;
 	private Body spaceShipBody;
 	private SpaceShipActor spaceShipActor;
-	private int life = 100;
+	private int life, initialLife;
 	private long hitDate;
-	
-	public Spaceship(World world, int x, int y) {
-			//Dynamic Body  
-			BodyDef bodyDef = new BodyDef();  
-			bodyDef.type = BodyType.DynamicBody;  
-			bodyDef.position.set(x, y);
 
-			spaceShipBody = world.createBody(bodyDef);  
-			PolygonShape dynamicShape = new PolygonShape();
-			Vector2[] vertices = new Vector2[3];
-			vertices[0] = new Vector2(0, 16);
-			vertices[1] = new Vector2(-16, -10);
-			vertices[2] = new Vector2(16, -10);
-			dynamicShape.set(vertices);
-			spaceShipBody.setAngularDamping(2f);
-			spaceShipBody.setLinearDamping(0.1f);
+	public Spaceship(World world, int x, int y, int initialLife) {
+		this.initialLife = initialLife;
+		this.life = initialLife;
+		
+		//Dynamic Body  
+		BodyDef bodyDef = new BodyDef();  
+		bodyDef.type = BodyType.DynamicBody;  
+		bodyDef.position.set(x, y);
 
-			spaceShipActor = new SpaceShipActor(this);
-			spaceShipBody.setUserData(spaceShipActor);
+		spaceShipBody = world.createBody(bodyDef);  
+		PolygonShape dynamicShape = new PolygonShape();
+		Vector2[] vertices = new Vector2[3];
+		vertices[0] = new Vector2(0, 16);
+		vertices[1] = new Vector2(-16, -10);
+		vertices[2] = new Vector2(16, -10);
+		dynamicShape.set(vertices);
+		spaceShipBody.setAngularDamping(2f);
+		spaceShipBody.setLinearDamping(0.1f);
 
-			FixtureDef fixtureDef = new FixtureDef();
-			fixtureDef.shape = dynamicShape; 
-			fixtureDef.density = 1.0f;  
-			fixtureDef.friction = 0.5f;  
-			fixtureDef.restitution = 0.3f;
-			spaceShipBody.createFixture(fixtureDef);
+		spaceShipActor = new SpaceShipActor(this);
+		spaceShipBody.setUserData(spaceShipActor);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicShape; 
+		fixtureDef.density = 1.0f;  
+		fixtureDef.friction = 0.5f;  
+		fixtureDef.restitution = 0.3f;
+		spaceShipBody.createFixture(fixtureDef);
 	}
-	
+
 	public void propulse() {
 		float rot = spaceShipBody.getAngularVelocity();
 
 		if (areBothOn()) {
 			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 4000)), spaceShipBody.getWorldCenter());
 		}
-		
+
 		if (isLeftOn() ^ isRightOn()) {
 			if (isLeftOn() && rot > -3) {
 				spaceShipBody.applyAngularImpulse(-5000);
@@ -62,31 +65,35 @@ public class Spaceship implements ISpaceshipController {
 			}
 		}
 	}
-	
+
 	public float getX() {
 		return spaceShipBody.getPosition().x;
 	}
-	
+
 	public float getY() {
 		return spaceShipBody.getPosition().y;
 	}
-	
+
 	public Body getSpaceShipBody() {
 		return spaceShipBody;
 	}
-	
+
 	public Actor getActor() {
 		return spaceShipActor;
+	}
+
+	public int getInitialLife() {
+		return initialLife;
 	}
 	
 	public int getLife() {
 		return life;
 	}
-	
+
 	public void updateLife(int delta) {
 		life += delta;
 	}
-	
+
 	@Override
 	public void engineLeft(boolean on) {
 		leftOn = on;
@@ -98,7 +105,7 @@ public class Spaceship implements ISpaceshipController {
 		rightOn = on;
 		updateActor();
 	}
-	
+
 	@Override
 	public void engineBoth(boolean on) {
 		bothOn = on;
@@ -118,7 +125,7 @@ public class Spaceship implements ISpaceshipController {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isLeftOn() {
 		return leftOn;
@@ -141,7 +148,7 @@ public class Spaceship implements ISpaceshipController {
 	public void setHit() {
 		this.hitDate = System.currentTimeMillis();
 	}
-	
+
 	public long getHitDate() {
 		return this.hitDate;
 	}

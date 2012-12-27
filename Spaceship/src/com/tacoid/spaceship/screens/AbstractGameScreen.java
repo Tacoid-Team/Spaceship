@@ -26,6 +26,7 @@ import com.tacoid.spaceship.KeyboardHandler;
 import com.tacoid.spaceship.SpaceshipGame;
 import com.tacoid.spaceship.actors.EngineButton;
 import com.tacoid.spaceship.actors.EngineButton.Direction;
+import com.tacoid.spaceship.actors.LifeActor;
 import com.tacoid.spaceship.objects.Spaceship;
 
 public class AbstractGameScreen implements Screen, ContactListener {
@@ -58,8 +59,11 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		createWalls();
 		
 		// Création du spaceship.
-		spaceship = new Spaceship(world, 240, 20);
+		spaceship = new Spaceship(world, 240, 20, 5);
 		stage.addActor(spaceship.getActor());
+		LifeActor lifeActor = new LifeActor(spaceship);
+		lifeActor.setPosition(20, 700);
+		stage_ui.addActor(lifeActor);
 
 		
 		debugRenderer = new Box2DDebugRenderer();

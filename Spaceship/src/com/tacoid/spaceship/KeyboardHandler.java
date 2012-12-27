@@ -49,7 +49,10 @@ public class KeyboardHandler implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return stage.touchDown(screenX, screenY, pointer, button);
+		if (!stage.touchDown(screenX, screenY, pointer, button)) {
+			System.out.println("Fire !");
+		}
+		return true;	
 	}
 
 	@Override
