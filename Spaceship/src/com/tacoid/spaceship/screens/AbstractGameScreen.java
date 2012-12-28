@@ -36,11 +36,13 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	protected Stage stage, stage_ui;
 	protected Spaceship spaceship;
 	private Box2DDebugRenderer debugRenderer;
+	private int gravity;
 	private static final float BOX_STEP = 1/60f;
 	private static final int BOX_VELOCITY_ITERATIONS = 6;  
 	private static final int BOX_POSITION_ITERATIONS = 2;  
 	
 	protected void init(String background, int gravity, int world_width, int world_height) {
+		this.gravity = gravity;
 		WORLD_WIDTH = world_width;
 		WORLD_HEIGHT = world_height;
 		stage = new Stage(480, 800,	false);
@@ -97,17 +99,17 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		groundBody.createFixture(groundBox, 0.0f);
 
 		// left
-		groundBodyDef =new BodyDef();  
+		groundBodyDef =new BodyDef();
 		groundBodyDef.position.set(new Vector2(1, 0));  
 		groundBody = world.createBody(groundBodyDef);  
-		groundBox = new PolygonShape();  
-		groundBox.setAsBox(1.0f, WORLD_HEIGHT);  
+		groundBox = new PolygonShape();
+		groundBox.setAsBox(1.0f, WORLD_HEIGHT);
 		groundBody.createFixture(groundBox, 0.0f);
 
 		// right
 		groundBodyDef =new BodyDef();
-		groundBodyDef.position.set(new Vector2(WORLD_WIDTH, 0));  
-		groundBody = world.createBody(groundBodyDef);  
+		groundBodyDef.position.set(new Vector2(WORLD_WIDTH, 0));
+		groundBody = world.createBody(groundBodyDef);
 		groundBox = new PolygonShape();
 		groundBox.setAsBox(1.0f, WORLD_HEIGHT);
 		groundBody.createFixture(groundBox, 0.0f);
@@ -162,13 +164,19 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	protected void step(float delta) {
+		spaceship.propulse();
+	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		step(delta);
 
-		spaceship.propulse();
-
+		//spaceship.getSpaceShipBody().applyForceToCenter(new Vector2(0, -gravity));
+		
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 
 		Iterator<Body> bi = world.getBodies();
@@ -178,6 +186,10 @@ public class AbstractGameScreen implements Screen, ContactListener {
 
 			// Get the bodies user data - in this example, our user 
 			// data is an instance of the Entity class
+			if (b.getUserData() instanceof Integer && (Integer)b.getUserData() == -1) {
+				world.destroyBody(b);
+			}
+			
 			Actor e = (Actor) b.getUserData();
 
 			if (e != null) {

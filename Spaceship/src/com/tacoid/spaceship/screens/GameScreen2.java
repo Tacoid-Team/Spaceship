@@ -7,9 +7,14 @@ import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.ObstacleActor;
 
 public class GameScreen2 extends AbstractGameScreen {
@@ -24,6 +29,34 @@ public class GameScreen2 extends AbstractGameScreen {
 		createObstacles();
 	}
 
+	private void createBullet() {
+		//Dynamic Body
+		BodyDef bodyDef = new BodyDef();  
+		bodyDef.type = BodyType.DynamicBody;  
+		bodyDef.position.set(spaceship.getSpaceShipBody().getWorldPoint(new Vector2(0, 20)));
+		bodyDef.gravityScale = 0;
+
+		Body body = world.createBody(bodyDef);
+		CircleShape dynamicShape = new CircleShape();
+		dynamicShape.setRadius(2);
+		dynamicShape.setPosition(new Vector2(2, 2));
+		
+		BulletActor actor = new BulletActor();
+		body.setUserData(actor);
+		stage.addActor(actor);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicShape; 
+		fixtureDef.density = 1.0f;  
+		fixtureDef.friction = 1.0f;  
+		fixtureDef.restitution = 0.5f;
+		fixtureDef.isSensor = true;
+		body.createFixture(fixtureDef);
+	
+		body.setAngularVelocity(0);
+		body.setLinearVelocity((float)Math.cos(spaceship.getSpaceShipBody().getAngle() + Math.PI / 2) * 100000, (float)Math.sin(spaceship.getSpaceShipBody().getAngle() + Math.PI / 2) * 100000);
+	}
+	
 	private void createObstacle(List<Vector2> obstacle) {
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 0));
@@ -38,7 +71,6 @@ public class GameScreen2 extends AbstractGameScreen {
 				Vector2[] v = new Vector2[] {triangles.get(i), triangles.get(i-1), triangles.get(i-2)};
 				groundBox.set(v);
 				groundBody.createFixture(groundBox, 0.0f);
-
 			}
 		}
 
@@ -125,12 +157,40 @@ public class GameScreen2 extends AbstractGameScreen {
 		}
 		return instance;
 	}
+	
+	@Override
+	protected void step(float delta) {
+		super.step(delta);
+		if (spaceship.tryFire()) {
+			System.out.println("Fire !");
+			createBullet();
+		}
+	}
 
 	@Override
-	public void beginContact(Contact contact) {	
+	public void beginContact(Contact contact) {
+		Body bodyA = contact.getFixtureA().getBody();
+		Body bodyB = contact.getFixtureB().getBody();
+		
+		if (bodyA.getUserData() instanceof BulletActor
+				|| bodyB.getUserData() instanceof BulletActor) {
+			Body bulletBody;
+			if (bodyA.getUserData() instanceof BulletActor) {
+				bulletBody = bodyA;
+			} else {
+				bulletBody = bodyB;
+			}
+			BulletActor bulletActor = (BulletActor)bulletBody.getUserData();
+			stage.getRoot().removeActor(bulletActor);
+			bulletBody.setUserData(-1);
+			System.out.println("here");
+			return;
+		}
+
+		
 		if (contact.getFixtureA().getBody() == spaceship.getSpaceShipBody()
 				|| contact.getFixtureB().getBody() == spaceship.getSpaceShipBody()) {
-
+			
 			WorldManifold manifold = contact.getWorldManifold();
 
 			boolean base = true;

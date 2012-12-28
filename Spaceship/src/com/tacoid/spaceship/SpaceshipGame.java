@@ -56,6 +56,7 @@ public class SpaceshipGame extends Game {
 		manager.load("images/spaceship_left.png", Texture.class);
 		manager.load("images/spaceship_right.png", Texture.class);
 		manager.load("images/lifebar.png", Texture.class);
+		manager.load("images/bullet.png", Texture.class);
 	}
 
 }

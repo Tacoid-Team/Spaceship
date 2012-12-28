@@ -19,6 +19,8 @@ public class Spaceship implements ISpaceshipController {
 	private SpaceShipActor spaceShipActor;
 	private int life, initialLife;
 	private long hitDate;
+	private long fireDate;
+	private boolean isFiring;
 
 	public Spaceship(World world, int x, int y, int initialLife) {
 		this.initialLife = initialLife;
@@ -155,5 +157,19 @@ public class Spaceship implements ISpaceshipController {
 
 	public boolean getAlreadyHit() {
 		return System.currentTimeMillis() - hitDate < 3000;
+	}
+	
+	public void fire(boolean on) {
+		this.isFiring = on;
+	}
+	
+	public boolean tryFire() {
+		if (isFiring) {
+			if (System.currentTimeMillis() - fireDate > 100) {
+				fireDate = System.currentTimeMillis();
+				return true;
+			}
+		}
+		return false;
 	}
 }
