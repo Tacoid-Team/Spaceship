@@ -5,29 +5,48 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.tacoid.spaceship.SpaceshipGame;
 import com.tacoid.spaceship.objects.Spaceship;
 
-public class SpaceShipActor extends Actor {
-	private Sprite activeSprite;
-	private TextureRegion none, both, left, right;
+public class SpaceShipActor extends Group {
+
+    
+	private Actor leftEngine;
+	private Actor rightEngine;
+	
+	boolean leftState;
+	boolean rightState;
+	
+	private Sprite shipSprite;
+	private TextureRegion shipTexture;
 	private Spaceship ship;
 	
 	public SpaceShipActor(Spaceship ship) {
 		this.ship = ship;
-		none = new TextureRegion(SpaceshipGame.manager.get("images/spaceship.png", Texture.class), 32, 32);
-		both = new TextureRegion(SpaceshipGame.manager.get("images/spaceship_both.png", Texture.class), 32, 32);
-		left = new TextureRegion(SpaceshipGame.manager.get("images/spaceship_left.png", Texture.class), 32, 32);
-		right = new TextureRegion(SpaceshipGame.manager.get("images/spaceship_right.png", Texture.class), 32, 32);
-		activeSprite = new Sprite(none);	
+		leftEngine = new EngineActor();
+		rightEngine = new EngineActor();
+		shipTexture = new TextureRegion(SpaceshipGame.manager.get("images/spaceship.png", Texture.class), 32, 32);
+		shipSprite = new Sprite(shipTexture);	
+		
+		leftState = false;
+		rightState = false;
+		
+		leftEngine.setPosition(-shipTexture.getRegionWidth()/2, -shipTexture.getRegionHeight()/2);
+		rightEngine.setPosition(shipTexture.getRegionWidth()/2-8, -shipTexture.getRegionHeight()/2);
+		
+		this.addActor(leftEngine);
+		this.addActor(rightEngine);
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		float alpha = blink();
-		activeSprite.setRotation(getRotation());
-		activeSprite.setPosition(getX() - activeSprite.getWidth()/2, getY() - activeSprite.getHeight()/2);
-		activeSprite.draw(batch, alpha * parentAlpha);
+		shipSprite.setRotation(getRotation());
+		shipSprite.setPosition(getX() - shipSprite.getWidth()/2, getY() - shipSprite.getHeight()/2);
+		shipSprite.draw(batch, alpha * parentAlpha);
+
+		super.draw(batch, alpha * parentAlpha);
 	}
 	
 	private float blink() {
@@ -40,18 +59,22 @@ public class SpaceShipActor extends Actor {
 	}
 	
 	public void setBoth() {
-		activeSprite = new Sprite(both);
+		leftEngine.setVisible(true);
+		rightEngine.setVisible(true);
 	}
 	
 	public void setNone() {
-		activeSprite = new Sprite(none);
+		leftEngine.setVisible(false);
+		rightEngine.setVisible(false);
 	}
 	
 	public void setLeft() {
-		activeSprite = new Sprite(left);
+		leftEngine.setVisible(true);
+		rightEngine.setVisible(false);
 	}
 	
 	public void setRight() {
-		activeSprite = new Sprite(right);
+		leftEngine.setVisible(false);
+		rightEngine.setVisible(true);
 	}
 }
