@@ -22,6 +22,8 @@ public class KeyboardHandler implements InputProcessor {
 			spaceship.engineLeft(true);
 		} else if (keycode == Keys.UP) {
 			spaceship.engineBoth(true);
+		} else if (keycode == Keys.SPACE) {
+			spaceship.fire(true);
 		} else {
 			return false;
 		}
@@ -36,6 +38,8 @@ public class KeyboardHandler implements InputProcessor {
 			spaceship.engineLeft(false);
 		} else if (keycode == Keys.UP) {
 			spaceship.engineBoth(false);
+		} else if (keycode == Keys.SPACE) {
+			spaceship.fire(false);
 		} else {
 			return false;
 		}

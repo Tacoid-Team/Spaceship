@@ -7,15 +7,12 @@ import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.ObstacleActor;
+import com.tacoid.spaceship.actors.SpaceShipActor;
 
 public class GameScreen2 extends AbstractGameScreen {
 	private static GameScreen2 instance;
@@ -27,34 +24,6 @@ public class GameScreen2 extends AbstractGameScreen {
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
 		createObstacles();
-	}
-
-	private void createBullet() {
-		//Dynamic Body
-		BodyDef bodyDef = new BodyDef();  
-		bodyDef.type = BodyType.DynamicBody;  
-		bodyDef.position.set(spaceship.getSpaceShipBody().getWorldPoint(new Vector2(0, 20)));
-		bodyDef.gravityScale = 0;
-
-		Body body = world.createBody(bodyDef);
-		CircleShape dynamicShape = new CircleShape();
-		dynamicShape.setRadius(2);
-		dynamicShape.setPosition(new Vector2(2, 2));
-		
-		BulletActor actor = new BulletActor();
-		body.setUserData(actor);
-		stage.addActor(actor);
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = dynamicShape; 
-		fixtureDef.density = 1.0f;  
-		fixtureDef.friction = 1.0f;  
-		fixtureDef.restitution = 0.5f;
-		fixtureDef.isSensor = true;
-		body.createFixture(fixtureDef);
-	
-		body.setAngularVelocity(0);
-		body.setLinearVelocity((float)Math.cos(spaceship.getSpaceShipBody().getAngle() + Math.PI / 2) * 100000, (float)Math.sin(spaceship.getSpaceShipBody().getAngle() + Math.PI / 2) * 100000);
 	}
 	
 	private void createObstacle(List<Vector2> obstacle) {
@@ -163,10 +132,10 @@ public class GameScreen2 extends AbstractGameScreen {
 		super.step(delta);
 		if (spaceship.tryFire()) {
 			System.out.println("Fire !");
-			createBullet();
+			stage.addActor(spaceship.createBullet());
 		}
 	}
-
+	
 	@Override
 	public void beginContact(Contact contact) {
 		Body bodyA = contact.getFixtureA().getBody();
@@ -175,15 +144,24 @@ public class GameScreen2 extends AbstractGameScreen {
 		if (bodyA.getUserData() instanceof BulletActor
 				|| bodyB.getUserData() instanceof BulletActor) {
 			Body bulletBody;
+			Body other;
 			if (bodyA.getUserData() instanceof BulletActor) {
 				bulletBody = bodyA;
+				other = bodyB;
 			} else {
 				bulletBody = bodyB;
+				other = bodyA;
 			}
 			BulletActor bulletActor = (BulletActor)bulletBody.getUserData();
-			stage.getRoot().removeActor(bulletActor);
-			bulletBody.setUserData(-1);
-			System.out.println("here");
+			if (other.getUserData() instanceof SpaceShipActor) {
+				if (bulletActor.isEnemy()) {
+					spaceship.updateLife(-1);
+				}
+			} else if (other.getUserData() == null) {
+				stage.getRoot().removeActor(bulletActor);
+				bulletBody.setUserData(-1);
+				System.out.println("here");
+			}
 			return;
 		}
 

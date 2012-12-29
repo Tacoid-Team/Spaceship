@@ -5,7 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.tacoid.spaceship.SpaceshipGame;
 
 public class BulletActor extends Image {
-	public BulletActor() {
+	private boolean enemy;
+	public BulletActor(boolean enemy) {
 		super(SpaceshipGame.manager.get("images/bullet.png", Texture.class));
+		this.enemy = enemy;
+	}
+	
+	public boolean isEnemy() {
+		return enemy;
 	}
 }

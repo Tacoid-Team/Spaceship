@@ -3,12 +3,14 @@ package com.tacoid.spaceship.objects;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.tacoid.spaceship.ISpaceshipController;
+import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.SpaceShipActor;
 
 public class Spaceship implements ISpaceshipController {
@@ -21,10 +23,12 @@ public class Spaceship implements ISpaceshipController {
 	private long hitDate;
 	private long fireDate;
 	private boolean isFiring;
+	private World world;
 
 	public Spaceship(World world, int x, int y, int initialLife) {
 		this.initialLife = initialLife;
 		this.life = initialLife;
+		this.world = world;
 		
 		//Dynamic Body  
 		BodyDef bodyDef = new BodyDef();  
@@ -51,6 +55,36 @@ public class Spaceship implements ISpaceshipController {
 		fixtureDef.restitution = 0.3f;
 		spaceShipBody.createFixture(fixtureDef);
 	}
+	
+	public BulletActor createBullet() {
+		//Dynamic Body
+		BodyDef bodyDef = new BodyDef();  
+		bodyDef.type = BodyType.DynamicBody;  
+		bodyDef.position.set(spaceShipBody.getWorldPoint(new Vector2(0, 20)));
+		bodyDef.gravityScale = 0;
+
+		Body body = world.createBody(bodyDef);
+		CircleShape dynamicShape = new CircleShape();
+		dynamicShape.setRadius(2);
+		dynamicShape.setPosition(new Vector2(2, 2));
+		
+		BulletActor actor = new BulletActor(false);
+		body.setUserData(actor);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicShape; 
+		fixtureDef.density = 1.0f;  
+		fixtureDef.friction = 1.0f;  
+		fixtureDef.restitution = 0.5f;
+		fixtureDef.isSensor = true;
+		body.createFixture(fixtureDef);
+	
+		body.setAngularVelocity(0);
+		body.setLinearVelocity((float)Math.cos(spaceShipBody.getAngle() + Math.PI / 2) * 100000, (float)Math.sin(spaceShipBody.getAngle() + Math.PI / 2) * 100000);
+		
+		return actor;
+	}
+	
 
 	public void propulse() {
 		float rot = spaceShipBody.getAngularVelocity();
