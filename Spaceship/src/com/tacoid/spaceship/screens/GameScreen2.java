@@ -11,8 +11,10 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.tacoid.spaceship.actors.BulletActor;
+import com.tacoid.spaceship.actors.EnemyActor;
 import com.tacoid.spaceship.actors.ObstacleActor;
 import com.tacoid.spaceship.actors.SpaceShipActor;
+import com.tacoid.spaceship.objects.Enemy;
 
 public class GameScreen2 extends AbstractGameScreen {
 	private static GameScreen2 instance;
@@ -24,6 +26,9 @@ public class GameScreen2 extends AbstractGameScreen {
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
 		createObstacles();
+		Enemy enemy = new Enemy(world, 230, 260, 118, 1);
+		EnemyActor enemyActor = new EnemyActor(enemy);
+		stage.addActor(enemyActor);
 	}
 	
 	private void createObstacle(List<Vector2> obstacle) {
@@ -160,7 +165,12 @@ public class GameScreen2 extends AbstractGameScreen {
 			} else if (other.getUserData() == null) {
 				stage.getRoot().removeActor(bulletActor);
 				bulletBody.setUserData(-1);
-				System.out.println("here");
+			} else if (other.getUserData() instanceof EnemyActor) {
+				EnemyActor enemyActor = (EnemyActor)other.getUserData();
+				enemyActor.getEnemy().hit();
+				stage.getRoot().removeActor(bulletActor);
+				bulletBody.setUserData(-1);
+				System.out.println("Enemy hit!");
 			}
 			return;
 		}

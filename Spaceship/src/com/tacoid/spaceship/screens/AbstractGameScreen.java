@@ -181,10 +181,11 @@ public class AbstractGameScreen implements Screen, ContactListener {
 
 		while (bi.hasNext()){
 			Body b = bi.next();
+			if (b == null) continue;
 
 			// Get the bodies user data - in this example, our user 
 			// data is an instance of the Entity class
-			if (b != null && b.getUserData() instanceof Integer && (Integer)b.getUserData() == -1) {
+			if (b.getUserData() instanceof Integer && (Integer)b.getUserData() == -1) {
 				world.destroyBody(b);
 			}
 			
@@ -198,13 +199,13 @@ public class AbstractGameScreen implements Screen, ContactListener {
 			}
 		}
 
-		centerCamera(); 
+		centerCamera();
 
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage_ui.act(Gdx.graphics.getDeltaTime());
 		
 		stage.draw();
-		stage_ui.draw();	
+		stage_ui.draw();
 		//debugRenderer.render(world, stage.getCamera().combined);
 	}
 
