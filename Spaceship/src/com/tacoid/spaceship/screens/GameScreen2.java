@@ -1,7 +1,6 @@
 package com.tacoid.spaceship.screens;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,10 +32,7 @@ public class GameScreen2 extends AbstractGameScreen {
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
 		createObstacles("maps/map1");
-		Enemy enemy = new Enemy(this, world, 230, 260, 118, 1);
-		EnemyActor enemyActor = new EnemyActor(enemy);
-		stage.addActor(enemyActor);
-		enemies.add(enemy);
+		createEnemies("maps/enemies1");
 	}
 
 	private void createObstacle(List<Vector2> obstacle) {
@@ -59,6 +55,30 @@ public class GameScreen2 extends AbstractGameScreen {
 		stage.addActor(new ObstacleActor(obstacle, triangles));
 	}
 
+	private void createEnemies(String f) {
+		FileHandle file = Gdx.files.internal(f);
+		BufferedReader in = file.reader(512);
+
+		String strLine;
+		try {
+			while ((strLine = in.readLine()) != null) {
+				String infos[] = strLine.split(",");
+				int x = Integer.valueOf(infos[0]);
+				int y = Integer.valueOf(infos[1]);
+				int angle = Integer.valueOf(infos[2]);
+				int life = Integer.valueOf(infos[3]);
+				
+				Enemy enemy = new Enemy(this, world, x, y, angle, life);
+				EnemyActor enemyActor = new EnemyActor(enemy);
+				stage.addActor(enemyActor);
+				enemies.add(enemy);	
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void createObstacles(String map) {
 		FileHandle file = Gdx.files.internal(map);
 		BufferedReader in = file.reader(512);

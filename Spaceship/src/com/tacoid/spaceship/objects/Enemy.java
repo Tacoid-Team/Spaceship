@@ -1,7 +1,5 @@
 package com.tacoid.spaceship.objects;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
