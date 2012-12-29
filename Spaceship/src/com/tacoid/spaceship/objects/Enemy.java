@@ -1,5 +1,7 @@
 package com.tacoid.spaceship.objects;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -45,15 +47,39 @@ public class Enemy {
 		return false;
 	}
 	
+	private float ecartAngle(float a, float b) {
+		float d = a - b;
+		if (d < -180) {
+			d += 360;
+		} else if (d > 180) {
+			d -= 360;
+		}
+		return d;
+	}
+	
 	public void step() {
 		float x0 = body.getPosition().x;
 		float y0 = body.getPosition().y;
 		float x1 = screen.getSpaceship().getX() + 16;
 		float y1 = screen.getSpaceship().getY() + 16;
-		direction = (float)(Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI) + 270;
+
+		direction = ((float)(Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI) + 270 + 360) % 360f;
+		float angle = ((float)(body.getAngle() * 180 / Math.PI) + 360) % 360f;
+		float ecart = ecartAngle(direction, angle);
+		
+		boolean ecartOk = true;
+		
+		if (ecart > 100) {
+			direction = angle + 100;
+			ecartOk = false;
+		} else if (ecart < -100) {
+			direction = angle - 100;
+			ecartOk = false;
+		}
+		
 		double distance = Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
 		
-		if (distance < 200 && tryFire()) {
+		if (ecartOk && distance < 200 && tryFire()) {
 			createBullet();
 		}
 	}

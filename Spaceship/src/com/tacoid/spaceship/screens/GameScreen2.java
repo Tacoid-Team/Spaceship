@@ -75,7 +75,6 @@ public class GameScreen2 extends AbstractGameScreen {
 					String coords[] = strLine.split(",");
 					obstacle.add(new Vector2(Float.valueOf(coords[0]), Float.valueOf(coords[1])));
 				}
-				System.out.println(strLine);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -97,7 +96,6 @@ public class GameScreen2 extends AbstractGameScreen {
 	protected void step(float delta) {
 		super.step(delta);
 		if (spaceship.tryFire()) {
-			System.out.println("Fire !");
 			stage.addActor(spaceship.createBullet());
 		}
 
