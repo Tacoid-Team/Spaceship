@@ -40,6 +40,14 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	private static final int BOX_VELOCITY_ITERATIONS = 6;  
 	private static final int BOX_POSITION_ITERATIONS = 2;  
 	
+	public Spaceship getSpaceship() {
+		return spaceship;
+	}
+	
+	public void addActor(Actor actor) {
+		stage.addActor(actor);
+	}
+	
 	protected void init(String background, int gravity, int world_width, int world_height) {
 		WORLD_WIDTH = world_width;
 		WORLD_HEIGHT = world_height;

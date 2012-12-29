@@ -45,6 +45,5 @@ public class EngineActor extends Actor{
 		sprite.setPosition(this.getX(), this.getY());
     	sprite.draw(batch, parentAlpha);
     }
-	
 
 }

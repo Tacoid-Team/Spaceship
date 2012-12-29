@@ -5,15 +5,18 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.tacoid.spaceship.screens.AbstractGameScreen;
 
 public class Enemy {
 	private int life;
 	private float direction;
 	private Body body;
+	private AbstractGameScreen screen;
 	
-	public Enemy(World world, int x, int y, int angle, int life) {
+	public Enemy(AbstractGameScreen gameScreen, World world, int x, int y, int angle, int life) {
 		this.life = life;
 		this.direction = 0;
+		this.screen = gameScreen;
 		
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(x, y));
@@ -27,7 +30,11 @@ public class Enemy {
 	}
 	
 	public void step() {
-		direction += 1;
+		float x0 = body.getPosition().x;
+		float y0 = body.getPosition().y;
+		float x1 = screen.getSpaceship().getX();
+		float y1 = screen.getSpaceship().getY();
+		direction = (float)(Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI) + 270;
 	}
 
 	public void hit() {

@@ -27,7 +27,7 @@ public class GameScreen2 extends AbstractGameScreen {
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
 		createObstacles();
-		Enemy enemy = new Enemy(world, 230, 260, 118, 1);
+		Enemy enemy = new Enemy(this, world, 230, 260, 118, 1);
 		EnemyActor enemyActor = new EnemyActor(enemy);
 		stage.addActor(enemyActor);
 		enemies.add(enemy);
