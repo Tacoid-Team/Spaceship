@@ -55,6 +55,10 @@ public class Spaceship implements ISpaceshipController {
 		spaceShipBody.createFixture(fixtureDef);
 	}
 	
+	public Body getBody() {
+		return spaceShipBody;
+	}
+	
 	public BulletActor createBullet() {
 		Bullet bullet = new Bullet(world, spaceShipBody.getWorldPoint(new Vector2(0, 20)), spaceShipBody.getAngle(), false);
 		return bullet.getActor();

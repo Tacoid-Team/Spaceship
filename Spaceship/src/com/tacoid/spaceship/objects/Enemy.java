@@ -12,8 +12,11 @@ public class Enemy {
 	private float direction;
 	private Body body;
 	private AbstractGameScreen screen;
+	private World world;
+	private long fireDate;
 	
 	public Enemy(AbstractGameScreen gameScreen, World world, int x, int y, int angle, int life) {
+		this.world = world;
 		this.life = life;
 		this.direction = 0;
 		this.screen = gameScreen;
@@ -29,12 +32,30 @@ public class Enemy {
 		body.createFixture(groundBox, 0.0f);
 	}
 	
+	private void createBullet() {
+		Bullet bullet = new Bullet(world, body.getWorldPoint(new Vector2(16, 24)), (float)(direction * Math.PI / 180), true);
+		screen.addActor(bullet.getActor());
+	}
+	
+	private boolean tryFire() {
+		if (System.currentTimeMillis() - fireDate > 300) {
+			fireDate = System.currentTimeMillis();
+			return true;
+		}
+		return false;
+	}
+	
 	public void step() {
 		float x0 = body.getPosition().x;
 		float y0 = body.getPosition().y;
-		float x1 = screen.getSpaceship().getX();
-		float y1 = screen.getSpaceship().getY();
+		float x1 = screen.getSpaceship().getX() + 16;
+		float y1 = screen.getSpaceship().getY() + 16;
 		direction = (float)(Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI) + 270;
+		double distance = Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
+		
+		if (distance < 200 && tryFire()) {
+			createBullet();
+		}
 	}
 
 	public void hit() {

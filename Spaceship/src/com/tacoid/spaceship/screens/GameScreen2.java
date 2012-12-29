@@ -1,6 +1,7 @@
 package com.tacoid.spaceship.screens;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.math.EarClippingTriangulator;
@@ -141,8 +142,15 @@ public class GameScreen2 extends AbstractGameScreen {
 			System.out.println("Fire !");
 			stage.addActor(spaceship.createBullet());
 		}
-		for (Enemy enemy : enemies) {
-			enemy.step();
+		
+		Iterator<Enemy> it = enemies.iterator();
+		while (it.hasNext()) {
+			Enemy enemy = it.next();
+			if (enemy.alive()) {
+				enemy.step();
+			} else {
+				it.remove();
+			}
 		}
 	}
 	
@@ -165,12 +173,15 @@ public class GameScreen2 extends AbstractGameScreen {
 			BulletActor bulletActor = (BulletActor)bulletBody.getUserData();
 			if (other.getUserData() instanceof SpaceShipActor) {
 				if (bulletActor.isEnemy()) {
-					spaceship.updateLife(-1);
+					if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
+						spaceship.updateLife(-1);
+						spaceship.setHit();
+					}
 				}
 			} else if (other.getUserData() == null) {
 				stage.getRoot().removeActor(bulletActor);
 				bulletBody.setUserData(-1);
-			} else if (other.getUserData() instanceof EnemyActor) {
+			} else if (other.getUserData() instanceof EnemyActor && !bulletActor.isEnemy()) {
 				EnemyActor enemyActor = (EnemyActor)other.getUserData();
 				enemyActor.getEnemy().hit();
 				stage.getRoot().removeActor(bulletActor);
