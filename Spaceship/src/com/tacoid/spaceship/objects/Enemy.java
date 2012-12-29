@@ -8,10 +8,12 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Enemy {
 	private int life;
+	private float direction;
 	private Body body;
 	
 	public Enemy(World world, int x, int y, int angle, int life) {
 		this.life = life;
+		this.direction = 0;
 		
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(x, y));
@@ -22,6 +24,10 @@ public class Enemy {
 		Vector2[] v = new Vector2[] {new Vector2(0, 0), new Vector2(32, 0), new Vector2(24, 24), new Vector2(8, 24)};
 		groundBox.set(v);
 		body.createFixture(groundBox, 0.0f);
+	}
+	
+	public void step() {
+		direction += 1;
 	}
 
 	public void hit() {
@@ -34,5 +40,9 @@ public class Enemy {
 	
 	public Body getBody() {
 		return body;
+	}
+	
+	public float getDirection() {
+		return direction;
 	}
 }

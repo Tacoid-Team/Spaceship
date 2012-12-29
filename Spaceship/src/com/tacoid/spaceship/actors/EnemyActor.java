@@ -27,7 +27,7 @@ public class EnemyActor extends Actor {
 		double rot = getRotation() * Math.PI / 180 + 0.92;
 		
 		head.setPosition(getX() - 8 + 25f * (float)Math.cos(rot), getY() - 8 + 25f * (float)Math.sin(rot));
-		head.rotate(1);
+		head.setRotation(enemy.getDirection());
 		head.draw(batch);
 		
 		batch.draw(base, getX(), getY(), 0, 0, 32, 32, 1, 1, getRotation());

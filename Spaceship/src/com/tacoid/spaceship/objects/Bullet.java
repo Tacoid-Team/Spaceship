@@ -12,7 +12,7 @@ import com.tacoid.spaceship.actors.BulletActor;
 public class Bullet {
 	private BulletActor actor;
 	
-	public Bullet(World world, Vector2 position, float direction) {
+	public Bullet(World world, Vector2 position, float direction, boolean isEnemy) {
 		//Dynamic Body
 		BodyDef bodyDef = new BodyDef();  
 		bodyDef.type = BodyType.DynamicBody;  
@@ -24,7 +24,7 @@ public class Bullet {
 		dynamicShape.setRadius(2);
 		dynamicShape.setPosition(new Vector2(2, 2));
 		
-		actor = new BulletActor(false);
+		actor = new BulletActor(isEnemy);
 		body.setUserData(actor);
 
 		FixtureDef fixtureDef = new FixtureDef();

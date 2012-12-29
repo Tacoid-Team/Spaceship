@@ -56,7 +56,7 @@ public class Spaceship implements ISpaceshipController {
 	}
 	
 	public BulletActor createBullet() {
-		Bullet bullet = new Bullet(world, spaceShipBody.getWorldPoint(new Vector2(0, 20)), spaceShipBody.getAngle());
+		Bullet bullet = new Bullet(world, spaceShipBody.getWorldPoint(new Vector2(0, 20)), spaceShipBody.getAngle(), false);
 		return bullet.getActor();
 	}
 

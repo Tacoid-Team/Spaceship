@@ -18,6 +18,7 @@ import com.tacoid.spaceship.objects.Enemy;
 
 public class GameScreen2 extends AbstractGameScreen {
 	private static GameScreen2 instance;
+	private List<Enemy> enemies = new ArrayList<Enemy>();
 
 	private GameScreen2() {
 		init();
@@ -29,6 +30,7 @@ public class GameScreen2 extends AbstractGameScreen {
 		Enemy enemy = new Enemy(world, 230, 260, 118, 1);
 		EnemyActor enemyActor = new EnemyActor(enemy);
 		stage.addActor(enemyActor);
+		enemies.add(enemy);
 	}
 	
 	private void createObstacle(List<Vector2> obstacle) {
@@ -138,6 +140,9 @@ public class GameScreen2 extends AbstractGameScreen {
 		if (spaceship.tryFire()) {
 			System.out.println("Fire !");
 			stage.addActor(spaceship.createBullet());
+		}
+		for (Enemy enemy : enemies) {
+			enemy.step();
 		}
 	}
 	
