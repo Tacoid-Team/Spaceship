@@ -19,7 +19,7 @@ public class Enemy {
 
 		body = world.createBody(groundBodyDef);  
 		PolygonShape groundBox = new PolygonShape();
-		Vector2[] v = new Vector2[] {new Vector2(8, 16), new Vector2(0, 0), new Vector2(32, 0), new Vector2(24, 16), new Vector2(24, 24), new Vector2(8, 24)};
+		Vector2[] v = new Vector2[] {new Vector2(0, 0), new Vector2(32, 0), new Vector2(24, 24), new Vector2(8, 24)};
 		groundBox.set(v);
 		body.createFixture(groundBox, 0.0f);
 	}

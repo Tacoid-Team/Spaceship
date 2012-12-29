@@ -26,13 +26,11 @@ public class EnemyActor extends Actor {
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		double rot = getRotation() * Math.PI / 180 + 0.92;
 		
-		//head.setPosition(getX() + 14.2f * (float)Math.cos(rot), getY() + 14.2f * (float)Math.sin(rot));
 		head.setPosition(getX() - 8 + 25f * (float)Math.cos(rot), getY() - 8 + 25f * (float)Math.sin(rot));
 		head.rotate(1);
 		head.draw(batch);
 		
 		batch.draw(base, getX(), getY(), 0, 0, 32, 32, 1, 1, getRotation());
-//		batch.draw(head, getX() + 14.2f * (float)Math.cos(rot), getY() + 14.2f * (float)Math.sin(rot), 0, 0, 16, 16, 1, 1, getRotation());
 	}
 
 	public Enemy getEnemy() {

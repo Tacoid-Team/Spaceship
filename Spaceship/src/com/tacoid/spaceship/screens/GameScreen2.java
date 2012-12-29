@@ -170,6 +170,10 @@ public class GameScreen2 extends AbstractGameScreen {
 				enemyActor.getEnemy().hit();
 				stage.getRoot().removeActor(bulletActor);
 				bulletBody.setUserData(-1);
+				if (!enemyActor.getEnemy().alive()) {
+					stage.getRoot().removeActor(enemyActor);
+					other.setUserData(-1);
+				}
 				System.out.println("Enemy hit!");
 			}
 			return;
