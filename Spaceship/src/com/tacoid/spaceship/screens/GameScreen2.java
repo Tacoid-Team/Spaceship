@@ -1,9 +1,14 @@
 package com.tacoid.spaceship.screens;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -27,13 +32,13 @@ public class GameScreen2 extends AbstractGameScreen {
 
 	protected void init() {
 		super.init("images/background2.png", 100, 1024, 1024);
-		createObstacles();
+		createObstacles("maps/map1");
 		Enemy enemy = new Enemy(this, world, 230, 260, 118, 1);
 		EnemyActor enemyActor = new EnemyActor(enemy);
 		stage.addActor(enemyActor);
 		enemies.add(enemy);
 	}
-	
+
 	private void createObstacle(List<Vector2> obstacle) {
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 0));
@@ -54,78 +59,31 @@ public class GameScreen2 extends AbstractGameScreen {
 		stage.addActor(new ObstacleActor(obstacle, triangles));
 	}
 
-	private void createObstacles() {
+	private void createObstacles(String map) {
+		FileHandle file = Gdx.files.internal(map);
+		BufferedReader in = file.reader(512);
+
+		String strLine;
 		List<Vector2> obstacle = new ArrayList<Vector2>();
-		obstacle.add(new Vector2(76,9));
-		obstacle.add(new Vector2(310,7));
-		obstacle.add(new Vector2(327,25));
-		obstacle.add(new Vector2(452,21));
-		obstacle.add(new Vector2(602,57));
-		obstacle.add(new Vector2(755,25));
-		obstacle.add(new Vector2(941,77));
-		obstacle.add(new Vector2(969,227));
-		obstacle.add(new Vector2(945,421));
-		obstacle.add(new Vector2(989,679));
-		obstacle.add(new Vector2(965,889));
-		obstacle.add(new Vector2(953,978));
-		obstacle.add(new Vector2(804,926));
-		obstacle.add(new Vector2(638,986));
-		obstacle.add(new Vector2(440,950));
-		obstacle.add(new Vector2(246,986));
-		obstacle.add(new Vector2(121,950));
-		obstacle.add(new Vector2(36,849));
-		obstacle.add(new Vector2(76,740));
-		obstacle.add(new Vector2(40,562));
-		obstacle.add(new Vector2(68,413));
-		obstacle.add(new Vector2(28,287));
-		obstacle.add(new Vector2(61,145));
-		obstacle.add(new Vector2(0,100));
-		obstacle.add(new Vector2(0,1024));
-		obstacle.add(new Vector2(1023,1024));
-		obstacle.add(new Vector2(1024,1));
-		obstacle.add(new Vector2(0,1));
-		obstacle.add(new Vector2(0,100));
-		obstacle.add(new Vector2(76,9));
-		createObstacle(obstacle);
-		obstacle = new ArrayList<Vector2>();
-		obstacle.add(new Vector2(210,300));
-		obstacle.add(new Vector2(274,178));
-		obstacle.add(new Vector2(456,174));
-		obstacle.add(new Vector2(699,219));
-		obstacle.add(new Vector2(808,275));
-		obstacle.add(new Vector2(828,554));
-		obstacle.add(new Vector2(755,542));
-		obstacle.add(new Vector2(719,308));
-		obstacle.add(new Vector2(662,388));
-		obstacle.add(new Vector2(549,267));
-		obstacle.add(new Vector2(452,360));
-		obstacle.add(new Vector2(375,255));
-		obstacle.add(new Vector2(246,493));
-		obstacle.add(new Vector2(210,300));
-		createObstacle(obstacle);
-		obstacle = new ArrayList<Vector2>();
-		obstacle.add(new Vector2(189,784));
-		obstacle.add(new Vector2(169,647));
-		obstacle.add(new Vector2(387,655));
-		obstacle.add(new Vector2(440,833));
-		obstacle.add(new Vector2(189,784));
-		createObstacle(obstacle);
-		obstacle = new ArrayList<Vector2>();
-		obstacle.add(new Vector2(602,809));
-		obstacle.add(new Vector2(630,659));
-		obstacle.add(new Vector2(828,667));
-		obstacle.add(new Vector2(832,829));
-		obstacle.add(new Vector2(602,809));
-		createObstacle(obstacle);
-		obstacle = new ArrayList<Vector2>();
-		obstacle.add(new Vector2(501,623));
-		obstacle.add(new Vector2(533,485));
-		obstacle.add(new Vector2(408,481));
-		obstacle.add(new Vector2(412,449));
-		obstacle.add(new Vector2(585,465));
-		obstacle.add(new Vector2(525,651));
-		obstacle.add(new Vector2(501,623));
-		createObstacle(obstacle);
+
+		try {
+			while ((strLine = in.readLine()) != null) {
+				if (strLine.equals("-")) {
+					createObstacle(obstacle);
+					obstacle = new ArrayList<Vector2>();
+				} else {
+					String coords[] = strLine.split(",");
+					obstacle.add(new Vector2(Float.valueOf(coords[0]), Float.valueOf(coords[1])));
+				}
+				System.out.println(strLine);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (obstacle.size() > 0) {
+			createObstacle(obstacle);
+		}
 	}
 
 	public static GameScreen2 getInstance() {
@@ -134,7 +92,7 @@ public class GameScreen2 extends AbstractGameScreen {
 		}
 		return instance;
 	}
-	
+
 	@Override
 	protected void step(float delta) {
 		super.step(delta);
@@ -142,7 +100,7 @@ public class GameScreen2 extends AbstractGameScreen {
 			System.out.println("Fire !");
 			stage.addActor(spaceship.createBullet());
 		}
-		
+
 		Iterator<Enemy> it = enemies.iterator();
 		while (it.hasNext()) {
 			Enemy enemy = it.next();
@@ -153,12 +111,12 @@ public class GameScreen2 extends AbstractGameScreen {
 			}
 		}
 	}
-	
+
 	@Override
 	public void beginContact(Contact contact) {
 		Body bodyA = contact.getFixtureA().getBody();
 		Body bodyB = contact.getFixtureB().getBody();
-		
+
 		if (bodyA.getUserData() instanceof BulletActor
 				|| bodyB.getUserData() instanceof BulletActor) {
 			Body bulletBody;
@@ -195,10 +153,10 @@ public class GameScreen2 extends AbstractGameScreen {
 			return;
 		}
 
-		
+
 		if (contact.getFixtureA().getBody() == spaceship.getSpaceShipBody()
 				|| contact.getFixtureB().getBody() == spaceship.getSpaceShipBody()) {
-			
+
 			WorldManifold manifold = contact.getWorldManifold();
 
 			boolean base = true;
