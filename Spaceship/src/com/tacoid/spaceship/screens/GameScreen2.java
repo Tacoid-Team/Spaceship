@@ -137,6 +137,8 @@ public class GameScreen2 extends AbstractGameScreen {
 
 		if (bodyA.getUserData() instanceof BulletActor
 				|| bodyB.getUserData() instanceof BulletActor) {
+			boolean removeBullet = false;
+			
 			Body bulletBody;
 			Body other;
 			if (bodyA.getUserData() instanceof BulletActor) {
@@ -152,21 +154,26 @@ public class GameScreen2 extends AbstractGameScreen {
 					if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
 						spaceship.updateLife(-1);
 						spaceship.setHit();
+						removeBullet = true;
 					}
 				}
 			} else if (other.getUserData() == null) {
-				stage.getRoot().removeActor(bulletActor);
-				bulletBody.setUserData(-1);
+				removeBullet = true;
 			} else if (other.getUserData() instanceof EnemyActor && !bulletActor.isEnemy()) {
 				EnemyActor enemyActor = (EnemyActor)other.getUserData();
 				enemyActor.getEnemy().hit();
-				stage.getRoot().removeActor(bulletActor);
-				bulletBody.setUserData(-1);
+				removeBullet = true;
+
 				if (!enemyActor.getEnemy().alive()) {
 					stage.getRoot().removeActor(enemyActor);
 					other.setUserData(-1);
 				}
 				System.out.println("Enemy hit!");
+			}
+			
+			if (removeBullet) {
+				stage.getRoot().removeActor(bulletActor);
+				bulletBody.setUserData(-1);
 			}
 			return;
 		}
