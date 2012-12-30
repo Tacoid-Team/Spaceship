@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.EnemyActor;
+import com.tacoid.spaceship.actors.ExplosionActor;
 import com.tacoid.spaceship.actors.ObstacleActor;
 import com.tacoid.spaceship.actors.SpaceShipActor;
 import com.tacoid.spaceship.objects.Enemy;
@@ -37,6 +38,10 @@ public class GameScreen2 extends AbstractGameScreen {
 
 	private Vector2 convertToBox(Vector2 v) {
 		return new Vector2(v.x * WORLD_TO_BOX, v.y * WORLD_TO_BOX);
+	}
+	
+	private Vector2 convertToWorld(Vector2 v) {
+		return new Vector2(v.x * BOX_TO_WORLD, v.y * BOX_TO_WORLD);
 	}
 	
 	private void createObstacle(List<Vector2> obstacle) {
@@ -171,6 +176,10 @@ public class GameScreen2 extends AbstractGameScreen {
 				if (!enemyActor.getEnemy().alive()) {
 					stage.getRoot().removeActor(enemyActor);
 					other.setUserData(-1);
+					ExplosionActor explosion = new ExplosionActor();
+					Vector2 pos = convertToWorld(other.getWorldPoint(new Vector2(16, 16)));
+					explosion.setPosition(pos.x, pos.y);
+					stage.addActor(explosion);
 				}
 				System.out.println("Enemy hit!");
 				
