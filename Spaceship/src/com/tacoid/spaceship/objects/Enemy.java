@@ -15,7 +15,7 @@ public class Enemy {
 	private World world;
 	private long fireDate;
 	
-	public Enemy(AbstractGameScreen gameScreen, World world, int x, int y, int angle, int life) {
+	public Enemy(AbstractGameScreen gameScreen, World world, float x, float y, int angle, int life) {
 		this.world = world;
 		this.life = life;
 		this.direction = 0;
@@ -27,13 +27,13 @@ public class Enemy {
 
 		body = world.createBody(groundBodyDef);  
 		PolygonShape groundBox = new PolygonShape();
-		Vector2[] v = new Vector2[] {new Vector2(0, 0), new Vector2(32, 0), new Vector2(24, 24), new Vector2(8, 24)};
+		Vector2[] v = new Vector2[] {new Vector2(0, 0), new Vector2(32 * AbstractGameScreen.WORLD_TO_BOX, 0), new Vector2(24* AbstractGameScreen.WORLD_TO_BOX, 24* AbstractGameScreen.WORLD_TO_BOX), new Vector2(8* AbstractGameScreen.WORLD_TO_BOX, 24* AbstractGameScreen.WORLD_TO_BOX)};
 		groundBox.set(v);
 		body.createFixture(groundBox, 0.0f);
 	}
 	
 	private void createBullet() {
-		Bullet bullet = new Bullet(world, body.getWorldPoint(new Vector2(16, 24)), (float)(direction * Math.PI / 180), true);
+		Bullet bullet = new Bullet(world, body.getWorldPoint(new Vector2(16 * AbstractGameScreen.WORLD_TO_BOX, 24 * AbstractGameScreen.WORLD_TO_BOX)), (float)(direction * Math.PI / 180), true);
 		screen.addActor(bullet.getActor());
 	}
 	
@@ -58,8 +58,8 @@ public class Enemy {
 	public void step() {
 		float x0 = body.getPosition().x;
 		float y0 = body.getPosition().y;
-		float x1 = screen.getSpaceship().getX() + 16;
-		float y1 = screen.getSpaceship().getY() + 16;
+		float x1 = screen.getSpaceship().getX() + 16* AbstractGameScreen.WORLD_TO_BOX;
+		float y1 = screen.getSpaceship().getY() + 16* AbstractGameScreen.WORLD_TO_BOX;
 
 		direction = ((float)(Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI) + 270 + 360) % 360f;
 		float angle = ((float)(body.getAngle() * 180 / Math.PI) + 360) % 360f;
@@ -77,7 +77,7 @@ public class Enemy {
 		
 		double distance = Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
 		
-		if (ecartOk && distance < 200 && tryFire()) {
+		if (ecartOk && distance < 200 * AbstractGameScreen.WORLD_TO_BOX && tryFire()) {
 			createBullet();
 		}
 	}

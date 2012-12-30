@@ -38,7 +38,9 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	private Box2DDebugRenderer debugRenderer;
 	private static final float BOX_STEP = 1/60f;
 	private static final int BOX_VELOCITY_ITERATIONS = 6;  
-	private static final int BOX_POSITION_ITERATIONS = 2;  
+	private static final int BOX_POSITION_ITERATIONS = 2;
+	public static final float WORLD_TO_BOX = 0.5f;
+	public static final float BOX_TO_WORLD = 1/WORLD_TO_BOX;
 	
 	public Spaceship getSpaceship() {
 		return spaceship;
@@ -67,7 +69,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		createWalls();
 		
 		// Création du spaceship.
-		spaceship = new Spaceship(world, 240, 20, 5);
+		spaceship = new Spaceship(world, 240 * WORLD_TO_BOX, 20 * WORLD_TO_BOX, 5);
 		stage.addActor(spaceship.getActor());
 		LifeActor lifeActor = new LifeActor(spaceship);
 		lifeActor.setPosition(20, 700);
@@ -134,13 +136,13 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	}
 	
 	protected void centerCamera() {
-		float y = spaceship.getY();
+		float y = spaceship.getY() * BOX_TO_WORLD;
 		float vH2 = stage.getCamera().viewportHeight / 2;
 		if (y < vH2) y = vH2;
 		else if (y > WORLD_HEIGHT - vH2) y = WORLD_HEIGHT - vH2;
 		stage.getCamera().position.y = y;
 
-		float x = spaceship.getX();
+		float x = spaceship.getX() * BOX_TO_WORLD;
 		float vW2 = stage.getCamera().viewportWidth / 2;
 		if (x < vW2) x = vW2;
 		else if (x > WORLD_WIDTH - vW2) x = WORLD_WIDTH - vW2;
@@ -201,7 +203,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 
 			if (e != null) {
 				// Update the entities/sprites position and angle
-				e.setPosition(b.getPosition().x, b.getPosition().y);
+				e.setPosition(b.getPosition().x * BOX_TO_WORLD, b.getPosition().y * BOX_TO_WORLD);
 				// We need to convert our angle from radians to degrees
 				e.setRotation(MathUtils.radiansToDegrees * b.getAngle());
 			}

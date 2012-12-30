@@ -28,15 +28,13 @@ public class Bullet {
 		body.setUserData(actor);
 
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = dynamicShape; 
-		fixtureDef.density = 1.0f;  
-		fixtureDef.friction = 1.0f;  
-		fixtureDef.restitution = 0.5f;
+		fixtureDef.shape = dynamicShape;
 		fixtureDef.isSensor = true;
 		body.createFixture(fixtureDef);
 	
+		body.setBullet(true);
 		body.setAngularVelocity(0);
-		body.setLinearVelocity((float)Math.cos(direction + Math.PI / 2) * 100000, (float)Math.sin(direction + Math.PI / 2) * 100000);
+		body.setLinearVelocity((float)Math.cos(direction + Math.PI / 2) * 1000, (float)Math.sin(direction + Math.PI / 2) * 1000);
 	}
 	
 	public BulletActor getActor() {

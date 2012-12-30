@@ -30,11 +30,15 @@ public class GameScreen2 extends AbstractGameScreen {
 	}
 
 	protected void init() {
-		super.init("images/background2.png", 100, 1024, 1024);
+		super.init("images/background2.png", 50, 1024, 1024);
 		createObstacles("maps/map1");
 		createEnemies("maps/enemies1");
 	}
 
+	private Vector2 convertToBox(Vector2 v) {
+		return new Vector2(v.x * WORLD_TO_BOX, v.y * WORLD_TO_BOX);
+	}
+	
 	private void createObstacle(List<Vector2> obstacle) {
 		BodyDef groundBodyDef = new BodyDef();  
 		groundBodyDef.position.set(new Vector2(0, 0));
@@ -46,7 +50,7 @@ public class GameScreen2 extends AbstractGameScreen {
 			if ((i + 1) % 3 == 0) {
 				Body groundBody = world.createBody(groundBodyDef);  
 				PolygonShape groundBox = new PolygonShape();
-				Vector2[] v = new Vector2[] {triangles.get(i), triangles.get(i-1), triangles.get(i-2)};
+				Vector2[] v = new Vector2[] {convertToBox(triangles.get(i)), convertToBox(triangles.get(i-1)), convertToBox(triangles.get(i-2))};
 				groundBox.set(v);
 				groundBody.createFixture(groundBox, 0.0f);
 			}
@@ -67,8 +71,8 @@ public class GameScreen2 extends AbstractGameScreen {
 				int y = Integer.valueOf(infos[1]);
 				int angle = Integer.valueOf(infos[2]);
 				int life = Integer.valueOf(infos[3]);
-				
-				Enemy enemy = new Enemy(this, world, x, y, angle, life);
+
+				Enemy enemy = new Enemy(this, world, x * WORLD_TO_BOX, y * WORLD_TO_BOX, angle, life);
 				EnemyActor enemyActor = new EnemyActor(enemy);
 				stage.addActor(enemyActor);
 				enemies.add(enemy);	
@@ -78,7 +82,7 @@ public class GameScreen2 extends AbstractGameScreen {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createObstacles(String map) {
 		FileHandle file = Gdx.files.internal(map);
 		BufferedReader in = file.reader(512);
@@ -138,7 +142,7 @@ public class GameScreen2 extends AbstractGameScreen {
 		if (bodyA.getUserData() instanceof BulletActor
 				|| bodyB.getUserData() instanceof BulletActor) {
 			boolean removeBullet = false;
-			
+
 			Body bulletBody;
 			Body other;
 			if (bodyA.getUserData() instanceof BulletActor) {
@@ -149,16 +153,16 @@ public class GameScreen2 extends AbstractGameScreen {
 				other = bodyA;
 			}
 			BulletActor bulletActor = (BulletActor)bulletBody.getUserData();
-			if (other.getUserData() instanceof SpaceShipActor) {
-				if (bulletActor.isEnemy()) {
-					if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
-						spaceship.updateLife(-1);
-						spaceship.setHit();
-						removeBullet = true;
-					}
+			
+			// spaceship hit
+			if (other.getUserData() instanceof SpaceShipActor && bulletActor.isEnemy()) {
+				if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
+					spaceship.updateLife(-1);
+					spaceship.setHit();
+					removeBullet = true;
 				}
-			} else if (other.getUserData() == null) {
-				removeBullet = true;
+
+			// enemy hit
 			} else if (other.getUserData() instanceof EnemyActor && !bulletActor.isEnemy()) {
 				EnemyActor enemyActor = (EnemyActor)other.getUserData();
 				enemyActor.getEnemy().hit();
@@ -169,8 +173,12 @@ public class GameScreen2 extends AbstractGameScreen {
 					other.setUserData(-1);
 				}
 				System.out.println("Enemy hit!");
+				
+			// obstacle
+			} else if (other.getUserData() == null) {
+				removeBullet = true;
 			}
-			
+
 			if (removeBullet) {
 				stage.getRoot().removeActor(bulletActor);
 				bulletBody.setUserData(-1);
@@ -195,7 +203,7 @@ public class GameScreen2 extends AbstractGameScreen {
 			}
 
 			Vector2 velocity = spaceship.getSpaceShipBody().getLinearVelocity();
-			if (!base || velocity.y > 20f || (velocity.y * velocity.y + velocity.x * velocity.x) > 14000) {
+			if (!base || velocity.y < -60f || velocity.len2() > 14000) {
 				if (spaceship.getLife() > 0 && !spaceship.getAlreadyHit()) {
 					spaceship.updateLife(-1);
 					spaceship.setHit();

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.tacoid.spaceship.ISpaceshipController;
 import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.SpaceShipActor;
+import com.tacoid.spaceship.screens.AbstractGameScreen;
 
 public class Spaceship implements ISpaceshipController {
 	private boolean leftOn = false;
@@ -24,7 +25,7 @@ public class Spaceship implements ISpaceshipController {
 	private boolean isFiring;
 	private World world;
 
-	public Spaceship(World world, int x, int y, int initialLife) {
+	public Spaceship(World world, float x, float y, int initialLife) {
 		this.initialLife = initialLife;
 		this.life = initialLife;
 		this.world = world;
@@ -37,9 +38,9 @@ public class Spaceship implements ISpaceshipController {
 		spaceShipBody = world.createBody(bodyDef);  
 		PolygonShape dynamicShape = new PolygonShape();
 		Vector2[] vertices = new Vector2[3];
-		vertices[0] = new Vector2(0, 16);
-		vertices[1] = new Vector2(-16, -10);
-		vertices[2] = new Vector2(16, -10);
+		vertices[0] = new Vector2(0 * AbstractGameScreen.WORLD_TO_BOX, 16 * AbstractGameScreen.WORLD_TO_BOX);
+		vertices[1] = new Vector2(-16 * AbstractGameScreen.WORLD_TO_BOX, -10 * AbstractGameScreen.WORLD_TO_BOX);
+		vertices[2] = new Vector2(16 * AbstractGameScreen.WORLD_TO_BOX, -10 * AbstractGameScreen.WORLD_TO_BOX);
 		dynamicShape.set(vertices);
 		spaceShipBody.setAngularDamping(2f);
 		spaceShipBody.setLinearDamping(0.1f);
@@ -60,22 +61,24 @@ public class Spaceship implements ISpaceshipController {
 	}
 	
 	public BulletActor createBullet() {
-		Bullet bullet = new Bullet(world, spaceShipBody.getWorldPoint(new Vector2(0, 20)), spaceShipBody.getAngle(), false);
+		Bullet bullet = new Bullet(world, spaceShipBody.getWorldPoint(new Vector2(-2 * AbstractGameScreen.WORLD_TO_BOX, 20 * AbstractGameScreen.WORLD_TO_BOX)), spaceShipBody.getAngle(), false);
 		return bullet.getActor();
 	}
 
 	public void propulse() {
 		float rot = spaceShipBody.getAngularVelocity();
 
+		spaceShipBody.setLinearDamping(spaceShipBody.getLinearVelocity().len2() / 8000);
+		
 		if (areBothOn()) {
-			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 4000)), spaceShipBody.getWorldCenter());
+			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 500)), spaceShipBody.getWorldCenter());
 		}
 
 		if (isLeftOn() ^ isRightOn()) {
 			if (isLeftOn() && rot > -3) {
-				spaceShipBody.applyAngularImpulse(-5000);
+				spaceShipBody.applyAngularImpulse(-500);
 			} else if (isRightOn() && rot < 3) {
-				spaceShipBody.applyAngularImpulse(5000);
+				spaceShipBody.applyAngularImpulse(500);
 			}
 		}
 	}
@@ -156,7 +159,7 @@ public class Spaceship implements ISpaceshipController {
 	}
 
 	public boolean isBase(Vector2 localV) {
-		return localV.y >= -11 && localV.y <= -9;
+		return localV.y >= -11 * AbstractGameScreen.WORLD_TO_BOX && localV.y <= -9 * AbstractGameScreen.WORLD_TO_BOX;
 	}
 
 	public void setHit() {
