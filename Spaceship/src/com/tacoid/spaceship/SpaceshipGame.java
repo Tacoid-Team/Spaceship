@@ -61,6 +61,8 @@ public class SpaceshipGame extends Game {
 		manager.load("images/engine.png", Texture.class);
 		manager.load("images/base_enemy.png", Texture.class);
 		manager.load("images/head_enemy.png", Texture.class);
+		manager.load("images/start_flag.png", Texture.class);
+		manager.load("images/finish_flag.png", Texture.class);
 	}
 
 }

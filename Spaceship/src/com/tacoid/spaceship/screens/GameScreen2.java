@@ -30,7 +30,7 @@ public class GameScreen2 extends AbstractGameScreen {
 		init();
 	}
 
-	protected void init() {
+	protected void init() {		
 		super.init("images/background2.png", 50, 1024, 1024);
 		createObstacles("maps/map1");
 		createEnemies("maps/enemies1");
