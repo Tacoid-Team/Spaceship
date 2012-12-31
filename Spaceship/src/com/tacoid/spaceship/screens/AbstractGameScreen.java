@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,11 +32,13 @@ import com.tacoid.spaceship.objects.Spaceship;
 
 public class AbstractGameScreen implements Screen, ContactListener {
 	protected World world;
+	protected int start_x, start_y;
 	protected int WORLD_HEIGHT = 1024;
 	protected int WORLD_WIDTH = 1024;
 	protected Stage stage, stage_ui;
 	protected Spaceship spaceship;
 	private Box2DDebugRenderer debugRenderer;
+	private int initial_life;
 	private static final float BOX_STEP = 1/60f;
 	private static final int BOX_VELOCITY_ITERATIONS = 6;  
 	private static final int BOX_POSITION_ITERATIONS = 2;
@@ -50,7 +53,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		stage.addActor(actor);
 	}
 	
-	protected void init(String background, int gravity, int world_width, int world_height) {
+	protected void init(String map, String background, int gravity, int world_width, int world_height) {
 		WORLD_WIDTH = world_width;
 		WORLD_HEIGHT = world_height;
 		stage = new Stage(480, 800,	false);
@@ -68,8 +71,11 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		// Murs autour.
 		createWalls();
 		
+		// Get start_x et start_y.
+		parseStart(map + "/start");
+		
 		// Création du spaceship.
-		spaceship = new Spaceship(world, 240 * WORLD_TO_BOX, 20 * WORLD_TO_BOX, 5);
+		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 5);
 		stage.addActor(spaceship.getActor());
 		LifeActor lifeActor = new LifeActor(spaceship);
 		lifeActor.setPosition(20, 700);
@@ -82,6 +88,14 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		Gdx.input.setInputProcessor(new KeyboardHandler(stage_ui, spaceship));
 	}
 	
+	private void parseStart(String startFile) {
+		FileHandle file = Gdx.files.internal(startFile);
+		String[] coord = file.readString().replaceAll("(\\r|\\n)", "").split(",");
+		start_x = Integer.parseInt(coord[0]);
+		start_y = Integer.parseInt(coord[1]);
+		initial_life = Integer.parseInt(coord[2]);
+	}
+
 	protected void initBackground(String image) {
 		Actor bgActor = new Image(SpaceshipGame.manager.get(image, Texture.class));
 		bgActor.setSize(WORLD_WIDTH, WORLD_HEIGHT);

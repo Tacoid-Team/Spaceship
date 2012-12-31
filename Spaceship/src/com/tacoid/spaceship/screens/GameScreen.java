@@ -13,7 +13,7 @@ public class GameScreen extends AbstractGameScreen {
 	}
 	
 	private void init() {
-		init("images/background1.png", 0, 480, 4000);
+		init("maps/1/", "images/background1.png", 0, 480, 4000);
 		createMeteorite();
 	}
 	

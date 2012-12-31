@@ -31,9 +31,9 @@ public class GameScreen2 extends AbstractGameScreen {
 	}
 
 	protected void init() {		
-		super.init("images/background2.png", 50, 1024, 1024);
-		createObstacles("maps/map1");
-		createEnemies("maps/enemies1");
+		super.init("maps/1/", "images/background2.png", 50, 1024, 1024);
+		createObstacles("maps/1/map");
+		createEnemies("maps/1/enemies");
 	}
 
 	private Vector2 convertToBox(Vector2 v) {
