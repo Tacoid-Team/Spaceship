@@ -18,8 +18,10 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.tacoid.spaceship.actors.BulletActor;
 import com.tacoid.spaceship.actors.EnemyActor;
 import com.tacoid.spaceship.actors.ExplosionActor;
+import com.tacoid.spaceship.actors.FinishFlagActor;
 import com.tacoid.spaceship.actors.ObstacleActor;
 import com.tacoid.spaceship.actors.SpaceShipActor;
+import com.tacoid.spaceship.actors.StartFlagActor;
 import com.tacoid.spaceship.objects.Enemy;
 
 public class GameScreen2 extends AbstractGameScreen {
@@ -32,10 +34,24 @@ public class GameScreen2 extends AbstractGameScreen {
 
 	protected void init() {		
 		super.init("maps/1/", "images/background2.png", 50, 1024, 1024);
+		createStartFlag();
+		createFinishFlag();
 		createObstacles("maps/1/map");
 		createEnemies("maps/1/enemies");
 	}
 
+	private void createStartFlag() {
+		StartFlagActor startActor = new StartFlagActor();
+		startActor.setPosition(start_x - 10, start_y - 8);
+		stage.getRoot().addActorBefore(spaceship.getActor(), startActor);
+	}
+	
+	private void createFinishFlag() {
+		FinishFlagActor endActor = new FinishFlagActor();
+		endActor.setPosition(end_x, end_y);
+		stage.getRoot().addActorBefore(spaceship.getActor(), endActor);
+	}
+	
 	private Vector2 convertToBox(Vector2 v) {
 		return new Vector2(v.x * WORLD_TO_BOX, v.y * WORLD_TO_BOX);
 	}

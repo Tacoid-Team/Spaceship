@@ -15,6 +15,9 @@ public class GameScreen extends AbstractGameScreen {
 	private void init() {
 		init("maps/1/", "images/background1.png", 0, 480, 4000);
 		createMeteorite();
+		
+		// Murs autour.
+		createWalls();
 	}
 	
 	private void createStone(int x, int y, int size, float initialAngularSpeed, Vector2 initialVector) {

@@ -71,21 +71,11 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		// Création du monde.
 		world = new World(new Vector2(0, -gravity), true);
 		
-		// Murs autour.
-		createWalls();
-		
 		// Get start_x et start_y.
 		parseStart(map + "/start");
-		StartFlagActor startActor = new StartFlagActor();
-		startActor.setPosition(start_x - 10, start_y - 8);
-		stage.addActor(startActor);
 		
 		// Get end_x et end_y.
-		parseEnd(map + "/end");
-		FinishFlagActor endActor = new FinishFlagActor();
-		endActor.setPosition(end_x, end_y);
-		stage.addActor(endActor);
-		
+		parseEnd(map + "/end");		
 		
 		// Création du spaceship.
 		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 5);
@@ -94,7 +84,6 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		lifeActor.setPosition(20, 700);
 		stage_ui.addActor(lifeActor);
 
-		
 		debugRenderer = new Box2DDebugRenderer();
 		createEngineButtons();
 		world.setContactListener(this);

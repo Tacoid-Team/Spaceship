@@ -1,5 +1,6 @@
 package com.tacoid.spaceship.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -81,8 +82,10 @@ public class Spaceship implements ISpaceshipController {
 				spaceShipBody.applyAngularImpulse(500);
 			}
 		}
+		
+		spaceShipBody.applyAngularImpulse(Gdx.input.getAccelerometerX() * 50);
 	}
-
+	
 	public float getX() {
 		return spaceShipBody.getPosition().x;
 	}
