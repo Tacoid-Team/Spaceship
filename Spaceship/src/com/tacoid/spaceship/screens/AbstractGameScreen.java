@@ -26,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.tacoid.spaceship.KeyboardHandler;
 import com.tacoid.spaceship.SpaceshipGame;
 import com.tacoid.spaceship.actors.EngineButton;
+import com.tacoid.spaceship.actors.FinishFlagActor;
+import com.tacoid.spaceship.actors.StartFlagActor;
 import com.tacoid.spaceship.actors.EngineButton.Direction;
 import com.tacoid.spaceship.actors.LifeActor;
 import com.tacoid.spaceship.objects.Spaceship;
@@ -33,6 +35,7 @@ import com.tacoid.spaceship.objects.Spaceship;
 public class AbstractGameScreen implements Screen, ContactListener {
 	protected World world;
 	protected int start_x, start_y;
+	protected int end_x, end_y;
 	protected int WORLD_HEIGHT = 1024;
 	protected int WORLD_WIDTH = 1024;
 	protected Stage stage, stage_ui;
@@ -73,6 +76,16 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		
 		// Get start_x et start_y.
 		parseStart(map + "/start");
+		StartFlagActor startActor = new StartFlagActor();
+		startActor.setPosition(start_x - 10, start_y - 8);
+		stage.addActor(startActor);
+		
+		// Get end_x et end_y.
+		parseEnd(map + "/end");
+		FinishFlagActor endActor = new FinishFlagActor();
+		endActor.setPosition(end_x, end_y);
+		stage.addActor(endActor);
+		
 		
 		// Création du spaceship.
 		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 5);
@@ -94,6 +107,13 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		start_x = Integer.parseInt(coord[0]);
 		start_y = Integer.parseInt(coord[1]);
 		initial_life = Integer.parseInt(coord[2]);
+	}
+	
+	private void parseEnd(String endFile) {
+		FileHandle file = Gdx.files.internal(endFile);
+		String[] coord = file.readString().replaceAll("(\\r|\\n)", "").split(",");
+		end_x = Integer.parseInt(coord[0]);
+		end_y = Integer.parseInt(coord[1]);
 	}
 
 	protected void initBackground(String image) {
