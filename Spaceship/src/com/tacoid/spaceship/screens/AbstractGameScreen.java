@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -239,7 +240,9 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		
 		stage.draw();
 		stage_ui.draw();
-		//debugRenderer.render(world, stage.getCamera().combined);
+		/*Matrix4 debugMatrix = new Matrix4(stage.getCamera().combined);
+		debugMatrix.scale(BOX_TO_WORLD, BOX_TO_WORLD, 1f);
+		debugRenderer.render(world, debugMatrix);*/
 	}
 
 	@Override
