@@ -69,21 +69,30 @@ public class Spaceship implements ISpaceshipController {
 	public void propulse() {
 		float rot = spaceShipBody.getAngularVelocity();
 
+		spaceShipActor.setNone();
 		spaceShipBody.setLinearDamping(spaceShipBody.getLinearVelocity().len2() / 8000);
 		
 		if (areBothOn()) {
 			spaceShipBody.applyLinearImpulse(spaceShipBody.getWorldVector(new Vector2(0, 500)), spaceShipBody.getWorldCenter());
+			spaceShipActor.setBoth();
 		}
 
 		if (isLeftOn() ^ isRightOn()) {
 			if (isLeftOn() && rot > -3) {
 				spaceShipBody.applyAngularImpulse(-500);
+				spaceShipActor.setLeft();
 			} else if (isRightOn() && rot < 3) {
 				spaceShipBody.applyAngularImpulse(500);
+				spaceShipActor.setRight();
 			}
 		}
 		
 		spaceShipBody.applyAngularImpulse(Gdx.input.getAccelerometerX() * 50);
+		if (Gdx.input.getAccelerometerX() * 50 > 100) {
+			spaceShipActor.setRight();
+		} else if (Gdx.input.getAccelerometerX() * 50 < -100) {
+			spaceShipActor.setLeft();
+		}
 	}
 	
 	public float getX() {
@@ -117,33 +126,16 @@ public class Spaceship implements ISpaceshipController {
 	@Override
 	public void engineLeft(boolean on) {
 		leftOn = on;
-		updateActor();
 	}
 
 	@Override
 	public void engineRight(boolean on) {
 		rightOn = on;
-		updateActor();
 	}
 
 	@Override
 	public void engineBoth(boolean on) {
 		bothOn = on;
-		updateActor();
-	}
-
-	private void updateActor() {
-		if (areBothOn()) {
-			spaceShipActor.setBoth();
-		} else {
-			if (leftOn) {
-				spaceShipActor.setLeft();
-			} else if (rightOn) {
-				spaceShipActor.setRight();
-			} else {
-				spaceShipActor.setNone();
-			}
-		}
 	}
 
 	@Override

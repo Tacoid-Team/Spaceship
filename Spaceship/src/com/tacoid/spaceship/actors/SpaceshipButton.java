@@ -6,23 +6,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.tacoid.spaceship.ISpaceshipController;
 
-public class EngineButton extends Button {
+public class SpaceshipButton extends Button {
 
-	public enum Direction {UP, LEFT, RIGHT};
+	public enum ButtonAction {UP, FIRE};
 	
-	public EngineButton(final ISpaceshipController controller, final Direction dir, Drawable up, Drawable down) {
+	public SpaceshipButton(final ISpaceshipController controller, final ButtonAction dir, Drawable up, Drawable down) {
 		super(up, down);
 		this.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
-				if (dir == Direction.LEFT) {
-					controller.engineRight(true);
-				} else if (dir == Direction.RIGHT) {
-					controller.engineLeft(true);
-				} else {
+				if (dir == ButtonAction.UP) {
 					controller.engineBoth(true);
+				} else {
+					controller.fire(true);
 				}
 				return true;
 			}
@@ -31,12 +29,10 @@ public class EngineButton extends Button {
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
-				if (dir == Direction.LEFT) {
-					controller.engineRight(false);
-				} else if (dir == Direction.RIGHT) {
-					controller.engineLeft(false);
-				} else {
+				if (dir == ButtonAction.UP) {
 					controller.engineBoth(false);
+				} else {
+					controller.fire(false);
 				}
 				return;
 			}

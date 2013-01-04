@@ -26,10 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.tacoid.spaceship.KeyboardHandler;
 import com.tacoid.spaceship.SpaceshipGame;
-import com.tacoid.spaceship.actors.EngineButton;
-import com.tacoid.spaceship.actors.FinishFlagActor;
-import com.tacoid.spaceship.actors.StartFlagActor;
-import com.tacoid.spaceship.actors.EngineButton.Direction;
+import com.tacoid.spaceship.actors.SpaceshipButton;
+import com.tacoid.spaceship.actors.SpaceshipButton.ButtonAction;
 import com.tacoid.spaceship.actors.LifeActor;
 import com.tacoid.spaceship.objects.Spaceship;
 
@@ -148,15 +146,13 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	}
 	
 	protected void createEngineButtons() {
-		EngineButton buttonBoth = new EngineButton(spaceship, Direction.UP, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_on.png", Texture.class), 100, 100)));
-		EngineButton buttonLeft = new EngineButton(spaceship, Direction.LEFT, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/left_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/left_on.png", Texture.class), 100, 100)));
-		EngineButton buttonRight = new EngineButton(spaceship, Direction.RIGHT, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/right_off.png", Texture.class), 100, 100)), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/right_on.png", Texture.class), 100, 100)));
+		SpaceshipButton buttonBoth = new SpaceshipButton(spaceship, ButtonAction.UP, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_off.png", Texture.class))), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/both_on.png", Texture.class))));
 		buttonBoth.setPosition(5, 50);
-		buttonRight.setPosition(480 - 105, 50);
-		buttonLeft.setPosition(480 - 210, 50);
-		stage_ui.addActor(buttonLeft);
-		stage_ui.addActor(buttonRight);
 		stage_ui.addActor(buttonBoth);
+		
+		SpaceshipButton buttonFire = new SpaceshipButton(spaceship, ButtonAction.FIRE, new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/fire_off.png", Texture.class))), new TextureRegionDrawable(new TextureRegion(SpaceshipGame.manager.get("images/fire_on.png", Texture.class))));
+		buttonFire.setPosition(480 - 128, 50);
+		stage_ui.addActor(buttonFire);
 	}
 	
 	protected void centerCamera() {

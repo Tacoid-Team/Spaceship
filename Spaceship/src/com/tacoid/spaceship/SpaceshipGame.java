@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.tacoid.spaceship.screens.GameScreen;
-import com.tacoid.spaceship.screens.GameScreen2;
 import com.tacoid.spaceship.screens.LoadingScreen;
 
 public class SpaceshipGame extends Game {
@@ -19,7 +18,7 @@ public class SpaceshipGame extends Game {
 		if (manager.update()) {
 			if (!loaded) {
 				if (getScreen() == null) {
-					setScreen(GameScreen2.getInstance());
+					setScreen(GameScreen.getInstance());
 				} else {
 					getScreen().show();
 				}
@@ -43,10 +42,8 @@ public class SpaceshipGame extends Game {
 	private void loadAssets() {
 		manager.load("images/explosion.png", Texture.class);
 		manager.load("images/obstacle_texture.jpg", Texture.class);
-		manager.load("images/right_on.png", Texture.class);
-		manager.load("images/right_off.png", Texture.class);
-		manager.load("images/left_on.png", Texture.class);
-		manager.load("images/left_off.png", Texture.class);
+		manager.load("images/fire_on.png", Texture.class);
+		manager.load("images/fire_off.png", Texture.class);
 		manager.load("images/both_on.png", Texture.class);
 		manager.load("images/both_off.png", Texture.class);
 		manager.load("images/background1.png", Texture.class);

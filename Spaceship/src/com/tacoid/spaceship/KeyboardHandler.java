@@ -53,18 +53,20 @@ public class KeyboardHandler implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (!stage.touchDown(screenX, screenY, pointer, button)) {
+		/*if (!stage.touchDown(screenX, screenY, pointer, button)) {
 			spaceship.fire(true);
 		}
-		return true;	
+		return true;*/
+		return stage.touchDown(screenX, screenY, pointer, button);
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (!stage.touchUp(screenX, screenY, pointer, button)) {
+		/*if (!stage.touchUp(screenX, screenY, pointer, button)) {
 			spaceship.fire(false);
 		}
-		return true;
+		return true;*/
+		return stage.touchUp(screenX, screenY, pointer, button);
 	}
 
 	@Override
