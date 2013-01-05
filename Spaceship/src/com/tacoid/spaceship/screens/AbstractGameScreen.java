@@ -80,7 +80,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 5);
 		stage.addActor(spaceship.getActor());
 		LifeActor lifeActor = new LifeActor(spaceship);
-		lifeActor.setPosition(20, 700);
+		lifeActor.setPosition(20, 720);
 		stage_ui.addActor(lifeActor);
 
 		debugRenderer = new Box2DDebugRenderer();
