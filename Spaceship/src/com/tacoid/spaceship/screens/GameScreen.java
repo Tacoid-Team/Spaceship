@@ -34,11 +34,11 @@ public class GameScreen extends AbstractGameScreen {
 	}
 
 	protected void init() {		
-		super.init("maps/1/", "images/background2.png", 50, 1024, 1024);
+		super.init("maps/2/", "images/background2.png", 50, 1024, 1024);
 		createStartFlag();
 		createFinishFlag();
-		createObstacles("maps/1/map");
-		createEnemies("maps/1/enemies");
+		createObstacles("maps/2/map");
+		createEnemies("maps/2/enemies");
 	}
 
 	private void createStartFlag() {
