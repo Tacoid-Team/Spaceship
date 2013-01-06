@@ -160,7 +160,6 @@ public class GameScreen extends AbstractGameScreen {
 			if (landDate == 0) {
 				landDate = System.currentTimeMillis();
 			} else if (System.currentTimeMillis() - landDate > 200) {
-				System.out.println("landed!");
 				if (closeToEnd()) {
 					System.out.println("\\o/");
 				}

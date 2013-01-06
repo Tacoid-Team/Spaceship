@@ -57,6 +57,14 @@ public class Spaceship implements ISpaceshipController {
 		spaceShipBody.createFixture(fixtureDef);
 	}
 	
+	public void moveTo(float x, float y, float angle, boolean stop) {
+		spaceShipBody.setTransform(x, y, angle);
+		if (stop) {
+			spaceShipBody.setAngularVelocity(0);
+			spaceShipBody.setLinearVelocity(0, 0);
+		}
+	}
+	
 	public Body getBody() {
 		return spaceShipBody;
 	}
@@ -87,10 +95,10 @@ public class Spaceship implements ISpaceshipController {
 			}
 		}
 		
-		spaceShipBody.applyAngularImpulse(Gdx.input.getAccelerometerX() * 50);
-		if (Gdx.input.getAccelerometerX() * 50 > 100) {
+		spaceShipBody.applyAngularImpulse(Gdx.input.getAccelerometerX() * 30);
+		if (Gdx.input.getAccelerometerX() * 30 > 100) {
 			spaceShipActor.setRight();
-		} else if (Gdx.input.getAccelerometerX() * 50 < -100) {
+		} else if (Gdx.input.getAccelerometerX() * 30 < -100) {
 			spaceShipActor.setLeft();
 		}
 	}
@@ -181,5 +189,9 @@ public class Spaceship implements ISpaceshipController {
 			}
 		}
 		return false;
+	}
+
+	public void reinitLife() {
+		this.life = initialLife;
 	}
 }

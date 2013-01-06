@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.tacoid.spaceship.KeyboardHandler;
 import com.tacoid.spaceship.SpaceshipGame;
+import com.tacoid.spaceship.actors.ReplayButton;
 import com.tacoid.spaceship.actors.SpaceshipButton;
 import com.tacoid.spaceship.actors.SpaceshipButton.ButtonAction;
 import com.tacoid.spaceship.actors.LifeActor;
@@ -40,7 +41,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	protected Stage stage, stage_ui;
 	protected Spaceship spaceship;
 	private Box2DDebugRenderer debugRenderer;
-	private int initial_life;
+	private int initialLife;
 	private static final float BOX_STEP = 1/60f;
 	private static final int BOX_VELOCITY_ITERATIONS = 6;  
 	private static final int BOX_POSITION_ITERATIONS = 2;
@@ -67,6 +68,10 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		bgActor.setPosition(0, 0);
 		stage.addActor(bgActor);
 		
+		ReplayButton replayButton = new ReplayButton(this);
+		replayButton.setPosition(400, 720);
+		stage_ui.addActor(replayButton);
+		
 		// Création du monde.
 		world = new World(new Vector2(0, -gravity), true);
 		
@@ -77,7 +82,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		parseEnd(map + "/end");		
 		
 		// Création du spaceship.
-		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 5);
+		spaceship = new Spaceship(world, start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, initialLife);
 		stage.addActor(spaceship.getActor());
 		LifeActor lifeActor = new LifeActor(spaceship);
 		lifeActor.setPosition(20, 720);
@@ -94,7 +99,7 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		String[] coord = file.readString().replaceAll("(\\r|\\n)", "").split(",");
 		start_x = Integer.parseInt(coord[0]);
 		start_y = Integer.parseInt(coord[1]);
-		initial_life = Integer.parseInt(coord[2]);
+		initialLife = Integer.parseInt(coord[2]);
 	}
 	
 	private void parseEnd(String endFile) {
@@ -275,5 +280,11 @@ public class AbstractGameScreen implements Screen, ContactListener {
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void restart() {
+		spaceship.moveTo(start_x * WORLD_TO_BOX, start_y * WORLD_TO_BOX, 0, true);
+		spaceship.reinitLife();
+		System.out.println("Restart game !");
 	}
 }
