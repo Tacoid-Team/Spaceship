@@ -207,8 +207,6 @@ public class AbstractGameScreen implements Screen, ContactListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		step(delta);
-
-		//spaceship.getSpaceShipBody().applyForceToCenter(new Vector2(0, -gravity));
 		
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 

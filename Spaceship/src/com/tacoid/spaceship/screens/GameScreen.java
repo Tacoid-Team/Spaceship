@@ -25,20 +25,15 @@ import com.tacoid.spaceship.actors.StartFlagActor;
 import com.tacoid.spaceship.objects.Enemy;
 
 public class GameScreen extends AbstractGameScreen {
-	private static GameScreen instance;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private long landDate;
 
-	private GameScreen() {
-		init();
-	}
-
-	protected void init() {		
-		super.init("maps/2/", "images/background2.png", 50, 1024, 1024);
+	public GameScreen(int map) {	
+		super.init("maps/" + map + "/", "images/background2.png", 50, 1024, 1024);
 		createStartFlag();
 		createFinishFlag();
-		createObstacles("maps/2/map");
-		createEnemies("maps/2/enemies");
+		createObstacles("maps/" + map + "/map");
+		createEnemies("maps/" + map + "/enemies");
 	}
 
 	private void createStartFlag() {
@@ -129,13 +124,6 @@ public class GameScreen extends AbstractGameScreen {
 		if (obstacle.size() > 0) {
 			createObstacle(obstacle);
 		}
-	}
-
-	public static GameScreen getInstance() {
-		if (instance == null) {
-			instance = new GameScreen();
-		}
-		return instance;
 	}
 
 	@Override

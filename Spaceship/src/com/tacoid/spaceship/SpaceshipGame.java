@@ -6,19 +6,32 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.tacoid.spaceship.screens.GameScreen;
 import com.tacoid.spaceship.screens.LoadingScreen;
+import com.tacoid.spaceship.screens.MapsScreen;
 
 public class SpaceshipGame extends Game {
 
 	private LoadingScreen loadingScreen;
 	public static AssetManager manager;
+	private static SpaceshipGame instance;
 	private boolean loaded;
 
+	private SpaceshipGame() {
+		
+	}
+	
+	public static SpaceshipGame getInstance() {
+		if (instance == null) {
+			instance = new SpaceshipGame();
+		}
+		return instance;
+	}
+	
 	@Override
 	public void render() {
 		if (manager.update()) {
 			if (!loaded) {
 				if (getScreen() == null) {
-					setScreen(GameScreen.getInstance());
+					setScreen(MapsScreen.getInstance());
 				} else {
 					getScreen().show();
 				}

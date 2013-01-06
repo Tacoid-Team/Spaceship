@@ -11,6 +11,6 @@ public class Main {
 		cfg.width = 480;
 		cfg.height = 800;
 		
-		new LwjglApplication(new SpaceshipGame(), cfg);
+		new LwjglApplication(SpaceshipGame.getInstance(), cfg);
 	}
 }
